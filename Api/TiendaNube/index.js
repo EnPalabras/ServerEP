@@ -10,7 +10,8 @@ TiendaNube.get('/', async (req, res) => {
 })
 
 TiendaNube.post('/', (req, res) => {
-  res.json({ message: 'Hello From Api Routes Post Req' })
+  const { body } = req
+  res.json({ body })
 })
 
 TiendaNube.all('/', (req, res) => {
