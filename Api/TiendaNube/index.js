@@ -11,6 +11,7 @@ TiendaNube.get('/', async (req, res) => {
 
 TiendaNube.post('/', (req, res) => {
   const { body } = req
+  console.log(body)
   res.json({ body })
 })
 
