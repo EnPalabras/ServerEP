@@ -26,24 +26,24 @@ const getOrder = async ({ id }) => {
 
 export const createOrder = async ({ id }) => {
   const order = await getOrder({ id })
-  const { number, id } = order
-  console.log(number, id)
+  const { number } = order
+  console.log(number)
 
   return { number, id }
 }
 
 export const updateOrder = async ({ id }) => {
   const order = await getOrder({ id })
-  const { number, id } = order
-  console.log(number, id)
+  const { number } = order
+  console.log(number)
 
   return { number, id }
 }
 
 export const cancelOrder = async ({ id }) => {
   const order = await getOrder({ id })
-  const { number, id } = order
-  console.log(number, id)
+  const { number } = order
+  console.log(number)
 
-  return { number, id }
+  return { number }
 }
