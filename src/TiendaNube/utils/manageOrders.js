@@ -5,7 +5,7 @@ dotenv.config()
 
 const { AUTH_TIENDANUBE } = process.env
 
-const getOrder = async ({ id }) => {
+const getOrder = async (id) => {
   const URL = `https://api.tiendanube.com/v1/1705915/orders/${id}`
   const headers = {
     'Content-Type': 'application/json',
@@ -22,24 +22,24 @@ const getOrder = async ({ id }) => {
   return data
 }
 
-export const createOrder = async ({ id }) => {
-  const order = await getOrder({ id })
+export const createOrder = async (id) => {
+  const order = await getOrder(id)
   const { number } = order
   console.log(number)
 
   return { number, id }
 }
 
-export const updateOrder = async ({ id }) => {
-  const order = await getOrder({ id })
+export const updateOrder = async (id) => {
+  const order = await getOrder(id)
   const { number } = order
   console.log(number)
 
   return { number, id }
 }
 
-export const cancelOrder = async ({ id }) => {
-  const order = await getOrder({ id })
+export const cancelOrder = async (id) => {
+  const order = await getOrder(id)
   const { number } = order
   console.log(number)
 
