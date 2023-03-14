@@ -10,7 +10,7 @@ MercadoLibre.get('/', async (req, res) => {
 
 MercadoLibre.post('/', async (req, res) => {
   const { body } = req
-
+  console.log(body)
   return res.status(200).json({ body })
 })
 
