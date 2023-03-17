@@ -10,28 +10,123 @@ datasource db {
   url      = env("DATABASE_URL")
 }
 
-model Post {
-  id        Int      @id @default(autoincrement())
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
-  title     String   @db.VarChar(255)
-  content   String?
-  published Boolean  @default(false)
-  author    User     @relation(fields: [authorId], references: [id])
-  authorId  Int
+model Orders {
+  idEP String  @unique
+  estado String  @db.VarChar(255)
+  fechaCreada DateTime @default(now())
+  fechaActualizada DateTime @updatedAt
+  canalVenta String  @db.VarChar(255)
+  nombre     String   @db.VarChar(255)
+  mail      String?   @db.VarChar(255)
+  DNI      String?   @db.VarChar(255)
+  telefono      String?   @db.VarChar(255)
+  externalId      String   @db.VarChar(255)
+  packId      String?   @db.VarChar(255)
+  cuponPago     String?   @db.VarChar(255)
+
+  Products Products[]
+  Shipment Shipment[]
+  Payments Payments[]
+  Discounts Discounts[]
 }
 
-model Profile {
-  id     Int     @id @default(autoincrement())
-  bio    String?
-  user   User    @relation(fields: [userId], references: [id])
-  userId Int     @unique
+model Products {
+  id     String     @id @default(cuid())
+  idEP   String   
+  producto String  @db.VarChar(255)
+  cantidad Int
+  precioUnitario Float
+  precioTotal Float
+  moneda String  @db.VarChar(255)
+  
+  Order   Orders     @relation(fields: [idEP], references: [idEP], onDelete: Cascade)
 }
 
-model User {
-  id      Int      @id @default(autoincrement())
-  email   String   @unique
-  name    String?
-  posts   Post[]
-  profile Profile?
+model Shipment {
+  id     String     @id @default(cuid())
+  idEP   String 
+  estado String  @db.VarChar(255)
+  tipoEnvio String  @db.VarChar(255)
+  costoEnvio Float?
+  pagoEnvio Float?
+  fechaEnvio DateTime?
+  fechaEntrega DateTime?
+  fechaRebotado DateTime?
+  codigoPostal String?  @db.VarChar(255)
+  ciudad String?  @db.VarChar(255)
+  provincia String?  @db.VarChar(255)
+  pais String?  @db.VarChar(255)
+
+  Order   Orders     @relation(fields: [idEP], references: [idEP], onDelete: Cascade)
+}
+
+model Payments {
+  id     String     @id @default(cuid())
+  idEP String 
+  estado String  @db.VarChar(255)
+  tipoPago String  @db.VarChar(255)
+  cuentaDestino String?  @db.VarChar(255)
+  fechaPago DateTime?
+  fechaLiquidacion DateTime? 
+  montoTotal Float?
+  montoRecibido Float?
+  cuotas Int?
+  
+  Order   Orders     @relation(fields: [idEP], references: [idEP], onDelete: Cascade)
+
+}
+
+model Discounts {
+  id     String     @id @default(cuid())
+  idEP String 
+  tipoDescuento String  @db.VarChar(255)
+  montoDescuento Float?
+  codigoDescuento String?  @db.VarChar(255)
+  
+  Order   Orders     @relation(fields: [idEP], references: [idEP], onDelete: Cascade)
+ 
+}
+
+model Producciones {
+  id    Int     @id @default(autoincrement())
+  fechaCreada DateTime @default(now())
+  producto String  @db.VarChar(255)
+  cantidad Int
+  precioUnitario Float?
+  precioTotal Float?
+  moneda String?  @db.VarChar(255)
+    
+  EntregasImprenta EntregasImprenta[]
+  ProductosImprenta ProductosImprenta[]
+}
+
+model EntregasImprenta {
+  id    Int     @id @default(autoincrement())
+  idProduccion   Int
+  fechaEntrega DateTime
+  cantidadEntregada Int
+
+  Entrega  Producciones     @relation(fields: [idProduccion], references: [id], onDelete: Cascade)
+  ProductosImprenta ProductosImprenta[]
+}
+
+model ProductosImprenta {
+  id   Int     @id @default(autoincrement())
+  idEntrega  Int
+  idProduccion  Int
+  producto String  @db.VarChar(255)
+  cantidad Int
+  comentarios String?  @db.VarChar(255)  
+
+  Entrega  EntregasImprenta     @relation(fields: [idEntrega], references: [id], onDelete: Cascade)
+  Produccion  Producciones     @relation(fields: [idProduccion], references: [id], onDelete: Cascade)
+}
+
+
+model Stock {
+  id    Int     @id @default(autoincrement())
+  producto String  @db.VarChar(255)
+  stockActual Int
+  faltanEntregar Int
+  stockPuntos Json?  
 }
