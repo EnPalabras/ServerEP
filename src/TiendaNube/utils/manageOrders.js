@@ -77,7 +77,7 @@ export const createOrder = async (id) => {
     tipoPago: gatewayTypes[orderData.gateway],
     cuentaDestino: paymentDestination[orderData.gateway],
     fechaPago: new Date(orderData.paid_at),
-    montoTotal: new Prisma.Decimal(orderData.total),
+    montoTotal: parseFloat(orderData.total),
   }
 
   if (orderData.gateway === 'Mercado Pago') {
@@ -93,7 +93,7 @@ export const createOrder = async (id) => {
     paymentBody = {
       ...paymentBody,
       fechaLiquidacion: new Date(orderData.paid_at),
-      montoRecibido: new Prisma.Decimal(orderData.total),
+      montoRecibido: parseFloat(orderData.total),
       cuotas: 1,
     }
   }
