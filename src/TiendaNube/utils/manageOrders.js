@@ -54,6 +54,11 @@ const paymentDestination = {
   'Efectivo - Sólo en nuestro punto de retiro.': 'Efectivo Katy',
 }
 
+const productos = {
+  'DESCONECTADOS - Juego de Cartas': 'Desconectados',
+  'DESTAPADOS - Juego de Cartas': 'Destapados',
+}
+
 export const createOrder = async (id) => {
   try {
     const orderData = await getOrder(id)
@@ -83,10 +88,6 @@ export const createOrder = async (id) => {
       cuotas: 1,
     }
 
-    let discountBody = {
-      idEP: `TN-${orderData.number}`,
-    }
-
     if (orderData.gateway_name === 'Mercado Pago') {
       const payData = await getPayment(orderData.gateway_id)
 
@@ -109,6 +110,30 @@ export const createOrder = async (id) => {
       data: {
         ...paymentBody,
       },
+    })
+
+    // Las siguientes líneas son para crear un array de productos y después cargar uno por uno en la base de datos
+    let productsOfOrder = []
+
+    orderData.products.forEach((product) => {
+      let productBody = {
+        idEP: `TN-${orderData.number}`,
+        producto: productos[product.name],
+        cantidad: parseInt(product.quantity),
+        precioUnitario: parseFloat(product.price),
+        precioTotal: this.precioUnitario * this.cantidad,
+        moneda: orderData.currency,
+      }
+
+      productsOfOrder.push(productBody)
+    })
+
+    productsOfOrder.forEach(async (product) => {
+      await prisma.products.create({
+        data: {
+          ...product,
+        },
+      })
     })
 
     // Las siguientes líneas son para crear un array de descuentos y después cargar uno por uno en la base de datos
