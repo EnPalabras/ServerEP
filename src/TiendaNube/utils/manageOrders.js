@@ -28,6 +28,9 @@ export const createOrder = async (id) => {
   const data = await getOrder(id)
   // const { number } = data
 
+  console.log('data', data)
+  console.log(data.number)
+
   const order = await prisma.orders.create({
     data: {
       idEP: `TN-${data.number}`,
@@ -40,10 +43,6 @@ export const createOrder = async (id) => {
       externalId: data.id,
     },
   })
-  // const order = await prisma.orders.create({
-  //   data: {
-
-  console.log(number)
 
   return { number, id }
 }
