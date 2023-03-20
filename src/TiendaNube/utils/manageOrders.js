@@ -66,7 +66,7 @@ export const createOrder = async (id) => {
       canalVenta: 'Tienda Nube',
       nombre: orderData.customer.name,
       mail: orderData.customer.email,
-      DNI: orderData.customer.document,
+      DNI: orderData.customer.identification,
       telefono: orderData.customer.phone,
       externalId: `${orderData.id}`,
     },
