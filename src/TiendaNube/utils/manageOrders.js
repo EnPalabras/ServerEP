@@ -1,5 +1,7 @@
+import { Prisma } from '@prisma/client'
 import dotenv from 'dotenv'
 import fetch from 'node-fetch'
+import { prisma } from '../../../lib/prisma'
 
 dotenv.config()
 
@@ -10,7 +12,7 @@ const getOrder = async (id) => {
   const headers = {
     'Content-Type': 'application/json',
     Authentication: AUTH_TIENDANUBE,
-    'User-Agent': 'En Palabras',
+    'User-Agent': 'En Palabras (enpalabrass@gmail.com)',
   }
 
   const response = await fetch(URL, {
@@ -23,8 +25,24 @@ const getOrder = async (id) => {
 }
 
 export const createOrder = async (id) => {
-  const order = await getOrder(id)
-  const { number } = order
+  const data = await getOrder(id)
+  // const { number } = data
+
+  const order = await prisma.orders.create({
+    data: {
+      idEP: `TN-${data.number}`,
+      estado: data.status,
+      fechaCreada: data.created_at,
+      canalVenta: 'Tienda Nube',
+      nombre: data.customer.name,
+      email: data.customer.email,
+      telefono: data.customer.phone,
+      externalId: data.id,
+    },
+  })
+  // const order = await prisma.orders.create({
+  //   data: {
+
   console.log(number)
 
   return { number, id }

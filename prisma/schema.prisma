@@ -14,7 +14,7 @@ model Orders {
   idEP String  @unique
   estado String  @db.VarChar(255)
   fechaCreada DateTime @default(now())
-  fechaActualizada DateTime @updatedAt
+  fechaActualizada DateTime? @updatedAt
   canalVenta String  @db.VarChar(255)
   nombre     String   @db.VarChar(255)
   mail      String?   @db.VarChar(255)
