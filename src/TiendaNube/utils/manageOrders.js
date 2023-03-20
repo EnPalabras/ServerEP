@@ -55,56 +55,60 @@ const paymentDestination = {
 }
 
 export const createOrder = async (id) => {
-  const orderData = await getOrder(id)
-  console.log(orderData.number)
+  try {
+    const orderData = await getOrder(id)
+    console.log(orderData.number)
 
-  const order = await prisma.orders.create({
-    data: {
+    const order = await prisma.orders.create({
+      data: {
+        idEP: `TN-${orderData.number}`,
+        estado: orderData.status,
+        fechaCreada: new Date(orderData.created_at),
+        canalVenta: 'Tienda Nube',
+        nombre: orderData.customer.name,
+        mail: orderData.customer.email,
+        DNI: orderData.customer.identification,
+        telefono: orderData.customer.phone,
+        externalId: `${orderData.id}`,
+      },
+    })
+
+    let paymentBody = {
       idEP: `TN-${orderData.number}`,
-      estado: orderData.status,
-      fechaCreada: new Date(orderData.created_at),
-      canalVenta: 'Tienda Nube',
-      nombre: orderData.customer.name,
-      mail: orderData.customer.email,
-      DNI: orderData.customer.identification,
-      telefono: orderData.customer.phone,
-      externalId: `${orderData.id}`,
-    },
-  })
-
-  let paymentBody = {
-    idEP: `TN-${orderData.number}`,
-    estado: orderData.payment_status,
-    tipoPago: gatewayTypes[orderData.gateway_name],
-    cuentaDestino: paymentDestination[orderData.gateway_name],
-    fechaPago: new Date(orderData.paid_at),
-    montoTotal: parseFloat(orderData.total),
-  }
-
-  if (orderData.gateway === 'Mercado Pago') {
-    const payData = await getPayment(orderData.gateway_id)
-
-    paymentBody = {
-      ...paymentBody,
-      fechaLiquidacion: new Date(payData.money_release_date),
-      montoRecibido: payData.transaction_details.net_received_amount,
-      cuotas: payData.installments,
+      estado: orderData.payment_status,
+      tipoPago: gatewayTypes[orderData.gateway_name],
+      cuentaDestino: paymentDestination[orderData.gateway_name],
+      fechaPago: new Date(orderData.paid_at),
+      montoTotal: parseFloat(orderData.total),
     }
-  } else if (orderData.gateway !== 'Mercado Pago') {
-    paymentBody = {
-      ...paymentBody,
-      fechaLiquidacion: new Date(orderData.paid_at),
-      montoRecibido: parseFloat(orderData.total),
-      cuotas: 1,
-    }
-  }
-  const payment = await prisma.payments.create({
-    data: {
-      ...paymentBody,
-    },
-  })
 
-  return { number: orderData.number, id }
+    if (orderData.gateway_name === 'Mercado Pago') {
+      const payData = await getPayment(orderData.gateway_id)
+
+      paymentBody = {
+        ...paymentBody,
+        fechaLiquidacion: new Date(payData.money_release_date),
+        montoRecibido: payData.transaction_details.net_received_amount,
+        cuotas: payData.installments,
+      }
+    } else if (orderData.gateway_name !== 'Mercado Pago') {
+      paymentBody = {
+        ...paymentBody,
+        fechaLiquidacion: new Date(orderData.paid_at),
+        montoRecibido: parseFloat(orderData.total),
+        cuotas: 1,
+      }
+    }
+    const payment = await prisma.payments.create({
+      data: {
+        ...paymentBody,
+      },
+    })
+
+    return { message: 'Ok' }
+  } catch (error) {
+    return { message: 'Error' }
+  }
 }
 
 export const updateOrder = async (id) => {
