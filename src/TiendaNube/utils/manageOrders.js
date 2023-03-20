@@ -43,7 +43,9 @@ const getPayment = async (id) => {
 const gatewayTypes = {
   'Mercado Pago': 'Mercado Pago',
   'Transferencia (Válido para Argentina)': 'Transferencia',
+  'Transferencia (Válido para Argentina) ': 'Transferencia',
   PayPal: 'PayPal',
+  'Efectivo - Sólo en nuestro punto de retiro. ': 'Efectivo',
   'Efectivo - Sólo en nuestro punto de retiro.': 'Efectivo',
 }
 
