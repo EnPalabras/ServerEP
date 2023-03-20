@@ -39,22 +39,20 @@ const getPayment = async (id) => {
 
   return data
 }
-const gatewayTypes = [
-  { name: 'Mercado Pago', value: 'Mercado Pago' },
-  { name: 'Transferencia (Válido para Argentina)', value: 'Transferencia' },
-  { name: 'PayPal', value: 'PayPal' },
-  { name: 'Efectivo - Sólo en nuestro punto de retiro.', value: 'Efectivo' },
-]
 
-const paymentDestination = [
-  { name: 'Mercado Pago', value: 'Mercado Pago' },
-  { name: 'Transferencia (Válido para Argentina)', value: 'Mercado Pago' },
-  { name: 'PayPal', value: 'PayPal' },
-  {
-    name: 'Efectivo - Sólo en nuestro punto de retiro.',
-    value: 'Efectivo Katy',
-  },
-]
+const gatewayTypes = {
+  'Mercado Pago': 'Mercado Pago',
+  'Transferencia (Válido para Argentina)': 'Transferencia',
+  PayPal: 'PayPal',
+  'Efectivo - Sólo en nuestro punto de retiro.': 'Efectivo',
+}
+
+const paymentDestination = {
+  'Mercado Pago': 'Mercado Pago',
+  'Transferencia (Válido para Argentina)': 'Mercado Pago',
+  PayPal: 'PayPal',
+  'Efectivo - Sólo en nuestro punto de retiro.': 'Efectivo Katy',
+}
 
 export const createOrder = async (id) => {
   const orderData = await getOrder(id)
@@ -66,7 +64,7 @@ export const createOrder = async (id) => {
       estado: orderData.status,
       fechaCreada: new Date(orderData.created_at),
       canalVenta: 'Tienda Nube',
-      nombre: orderData.customer.identification,
+      nombre: orderData.customer.name,
       mail: orderData.customer.email,
       DNI: orderData.customer.document,
       telefono: orderData.customer.phone,
@@ -77,11 +75,8 @@ export const createOrder = async (id) => {
   let paymentBody = {
     idEP: `TN-${orderData.number}`,
     estado: orderData.payment_status,
-    tipoPago: gatewayTypes.find((type) => type.name === orderData.gateway)
-      .value,
-    cuentaDestino: paymentDestination.find(
-      (type) => type.name === orderData.gateway
-    ).value,
+    tipoPago: gatewayTypes[orderData.gateway_name],
+    cuentaDestino: paymentDestination[orderData.gateway_name],
     fechaPago: new Date(orderData.paid_at),
     montoTotal: parseFloat(orderData.total),
   }
