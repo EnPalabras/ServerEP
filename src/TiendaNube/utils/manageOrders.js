@@ -59,27 +59,32 @@ export const createOrder = async (id) => {
     const orderData = await getOrder(id)
     console.log(orderData.number)
 
-    const order = await prisma.orders.create({
-      data: {
-        idEP: `TN-${orderData.number}`,
-        estado: orderData.status,
-        fechaCreada: new Date(orderData.created_at),
-        canalVenta: 'Tienda Nube',
-        nombre: orderData.customer.name,
-        mail: orderData.customer.email,
-        DNI: orderData.customer.identification,
-        telefono: orderData.customer.phone,
-        externalId: `${orderData.id}`,
-      },
-    })
+    let orderBody = {
+      idEP: `TN-${orderData.number}`,
+      estado: orderData.status,
+      fechaCreada: new Date(orderData.created_at),
+      canalVenta: 'Tienda Nube',
+      nombre: orderData.customer.name,
+      mail: orderData.customer.email,
+      DNI: orderData.customer.identification,
+      telefono: orderData.customer.phone,
+      externalId: `${orderData.id}`,
+    }
 
     let paymentBody = {
       idEP: `TN-${orderData.number}`,
       estado: orderData.payment_status,
       tipoPago: gatewayTypes[orderData.gateway_name],
       cuentaDestino: paymentDestination[orderData.gateway_name],
-      fechaPago: new Date(orderData.paid_at),
+      fechaPago: orderData.paid_at ? new Date(orderData.paid_at) : null,
       montoTotal: parseFloat(orderData.total),
+      fechaLiquidacion: orderData.paid_at ? new Date(orderData.paid_at) : null,
+      montoRecibido: parseFloat(orderData.total),
+      cuotas: 1,
+    }
+
+    let discountBody = {
+      idEP: `TN-${orderData.number}`,
     }
 
     if (orderData.gateway_name === 'Mercado Pago') {
@@ -87,22 +92,69 @@ export const createOrder = async (id) => {
 
       paymentBody = {
         ...paymentBody,
-        fechaLiquidacion: new Date(payData.money_release_date),
+        fechaLiquidacion: payData.money_release_date
+          ? new Date(payData.money_release_date)
+          : null,
         montoRecibido: payData.transaction_details.net_received_amount,
         cuotas: payData.installments,
       }
-    } else if (orderData.gateway_name !== 'Mercado Pago') {
-      paymentBody = {
-        ...paymentBody,
-        fechaLiquidacion: new Date(orderData.paid_at),
-        montoRecibido: parseFloat(orderData.total),
-        cuotas: 1,
-      }
     }
+    const order = await prisma.orders.create({
+      data: {
+        ...orderBody,
+      },
+    })
+
     const payment = await prisma.payments.create({
       data: {
         ...paymentBody,
       },
+    })
+
+    // Las siguientes líneas son para crear un array de descuentos y después cargar uno por uno en la base de datos
+    let discountTopics = []
+
+    if (parseFloat(orderData.discount_coupon) > 0) {
+      let discount = {
+        idEP: `TN-${orderData.number}`,
+        tipoDescuento: 'Cupon',
+        codigoDescuento: orderData.coupon.code,
+        montoDescuento: parseFloat(orderData.discount_coupon),
+      }
+
+      discountTopics.push(discount)
+    }
+
+    if (parseFloat(orderData.discount_gateway) > 0) {
+      let discount = {
+        idEP: `TN-${orderData.number}`,
+        tipoDescuento: 'Metodo de Pago',
+        codigoDescuento: null,
+        montoDescuento: parseFloat(orderData.discount_gateway),
+      }
+
+      discountTopics.push(discount)
+    }
+
+    if (parseFloat(orderData.promotional_discount.total_discount_amount) > 0) {
+      let discount = {
+        idEP: `TN-${orderData.number}`,
+        tipoDescuento: 'Promocional',
+        codigoDescuento: null,
+        montoDescuento: parseFloat(
+          orderData.promotional_discount.total_discount_amount
+        ),
+      }
+
+      discountTopics.push(discount)
+    }
+
+    discountTopics.forEach(async (discount) => {
+      await prisma.discounts.create({
+        data: {
+          ...discount,
+        },
+      })
     })
 
     return { message: 'Ok' }
