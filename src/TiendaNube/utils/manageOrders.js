@@ -115,14 +115,16 @@ export const createOrder = async (id) => {
     let discountTopics = []
 
     if (parseFloat(orderData.discount_coupon) > 0) {
-      let discount = {
-        idEP: `TN-${orderData.number}`,
-        tipoDescuento: 'Cupon',
-        codigoDescuento: orderData.coupon.code,
-        montoDescuento: parseFloat(orderData.discount_coupon),
-      }
+      for (let i = 0; i < orderData.coupon.length; i++) {
+        let discount = {
+          idEP: `TN-${orderData.number}`,
+          tipoDescuento: 'Cupon',
+          codigoDescuento: orderData.coupon[i].code,
+          montoDescuento: parseFloat(orderData.discount_coupon),
+        }
 
-      discountTopics.push(discount)
+        discountTopics.push(discount)
+      }
     }
 
     if (parseFloat(orderData.discount_gateway) > 0) {
