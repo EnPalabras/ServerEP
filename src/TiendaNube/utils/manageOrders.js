@@ -28,7 +28,6 @@ export const createOrder = async (id) => {
   const data = await getOrder(id)
   // const { number } = data
 
-  console.log('data', data)
   console.log(data.number)
 
   const order = await prisma.orders.create({

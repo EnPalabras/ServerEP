@@ -25,7 +25,7 @@ TiendaNube.post('/', async (req, res) => {
     return res.status(201).json({ message: 'Order cancelled' })
   }
 
-  if (event === 'order/created') {
+  if (event === 'order/created' || event === 'order/paid') {
     await createOrder(id)
     return res.status(201).json({ message: 'Order created' })
   }
