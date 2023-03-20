@@ -121,7 +121,7 @@ export const createOrder = async (id) => {
         producto: productos[product.name],
         cantidad: parseInt(product.quantity),
         precioUnitario: parseFloat(product.price),
-        precioTotal: this.precioUnitario * this.cantidad,
+        precioTotal: parseInt(product.quantity) * parseFloat(product.price),
         moneda: orderData.currency,
       }
 
@@ -186,6 +186,7 @@ export const createOrder = async (id) => {
 
     return { message: 'Ok' }
   } catch (error) {
+    console.log(error)
     return { message: 'Error' }
   }
 }
