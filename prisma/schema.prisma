@@ -47,8 +47,10 @@ model Shipment {
   idEP   String 
   estado String  @db.VarChar(255)
   tipoEnvio String  @db.VarChar(255)
+  nombreEnvio String?  @db.VarChar(255)
   costoEnvio Float?
   pagoEnvio Float?
+  stockDesde String  @db.VarChar(255)
   fechaEnvio DateTime?
   fechaEntrega DateTime?
   fechaRebotado DateTime?
@@ -58,6 +60,14 @@ model Shipment {
   pais String?  @db.VarChar(255)
 
   Order   Orders     @relation(fields: [idEP], references: [idEP], onDelete: Cascade)
+  Stock   StockPoint     @relation(fields: [stockDesde], references: [nombre], onDelete: Cascade)
+}
+
+model StockPoint {
+  id String @id @default(cuid())
+  nombre String  @db.VarChar(255) @unique
+
+  Shipment Shipment[]
 }
 
 model Payments {

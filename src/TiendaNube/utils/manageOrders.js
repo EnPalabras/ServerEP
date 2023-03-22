@@ -64,6 +64,30 @@ const productos = {
   'AÑO NUEVO - Juego de Cartas': 'Año Nuevo',
 }
 
+const shipType = {
+  'Retiras en Punto de retiro Recoleta': 'Recoleta',
+  'Retiras en Punto de retiro Recoleta.': 'Recoleta',
+  'Retiras en Punto de retiro Recoleta. ': 'Recoleta',
+  'Envío a domicilio Estándar - shipnow': 'Ship Now',
+  'Envío a domicilio Estándar - shipnow ': 'Ship Now',
+  DHL: 'DHL',
+  'Punto de Retiro': 'Envío Pack',
+  'Envío a Domicilio Estándar': 'Envío Pack',
+  'Envío a Domicilio Express': 'Envío Pack',
+}
+
+const shipStock = {
+  'Retiras en Punto de retiro Recoleta': 'Juncal',
+  'Retiras en Punto de retiro Recoleta.': 'Juncal',
+  'Retiras en Punto de retiro Recoleta. ': 'Juncal',
+  'Envío a domicilio Estándar - shipnow': 'Deposito SN',
+  'Envío a domicilio Estándar - shipnow ': 'Deposito SN',
+  DHL: 'Juncal',
+  'Punto de Retiro': 'Deposito EPack',
+  'Envío a Domicilio Estándar': 'Deposito EPack',
+  'Envío a Domicilio Express': 'Deposito EPack',
+}
+
 export const createOrder = async (id) => {
   try {
     const orderData = await getOrder(id)
@@ -93,6 +117,31 @@ export const createOrder = async (id) => {
       cuotas: 1,
     }
 
+    let shipData = {
+      idEP: `TN-${orderData.number}`,
+      estado: 'Pendiente',
+      tipoEnvio: shipType[orderData.shipping_option],
+      nombreEnvio: orderData.shipping_option_code,
+      costoEnvio: null,
+      pagoEnvio: parseFloat(orderData.shipping_cost_customer),
+      stockDesde: shipStock[orderData.shipping_option],
+      fechaEnvio: orderData.shipped_at ? new Date(orderData.shipped_at) : null,
+      fechaEntrega: null,
+      fechaRebotado: null,
+      codigoPostal: orderData.shipping_address.zipcode
+        ? orderData.shipping_address.zipcode
+        : null,
+      ciudad: orderData.shipping_address.city
+        ? orderData.shipping_address.city
+        : null,
+      provincia: orderData.shipping_address.province
+        ? orderData.shipping_address.province
+        : null,
+      pais: orderData.shipping_address.country
+        ? orderData.shipping_address.country
+        : null,
+    }
+
     if (orderData.gateway_name === 'Mercado Pago') {
       const payData = await getPayment(orderData.gateway_id)
 
@@ -114,6 +163,12 @@ export const createOrder = async (id) => {
     const payment = await prisma.payments.create({
       data: {
         ...paymentBody,
+      },
+    })
+
+    const ship = await prisma.shipmentscreate({
+      data: {
+        ...shipData,
       },
     })
 
