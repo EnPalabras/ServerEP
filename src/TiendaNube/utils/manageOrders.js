@@ -52,13 +52,16 @@ const gatewayTypes = {
 const paymentDestination = {
   'Mercado Pago': 'Mercado Pago',
   'Transferencia (Válido para Argentina)': 'Mercado Pago',
+  'Transferencia (Válido para Argentina) ': 'Transferencia',
   PayPal: 'PayPal',
   'Efectivo - Sólo en nuestro punto de retiro.': 'Efectivo Katy',
+  'Efectivo - Sólo en nuestro punto de retiro. ': 'Efectivo Katy',
 }
 
 const productos = {
   'DESCONECTADOS - Juego de Cartas': 'Desconectados',
   'DESTAPADOS - Juego de Cartas': 'Destapados',
+  'AÑO NUEVO - Juego de Cartas': 'Año Nuevo',
 }
 
 export const createOrder = async (id) => {
