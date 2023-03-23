@@ -71,6 +71,7 @@ const shipType = {
   'Envío a domicilio Estándar - shipnow': 'Ship Now',
   'Envío a domicilio Estándar - shipnow ': 'Ship Now',
   DHL: 'DHL',
+  'Punto de retiro': 'Envío Pack',
   'Punto de Retiro': 'Envío Pack',
   'Envío a Domicilio Estándar': 'Envío Pack',
   'Envío a Domicilio Express': 'Envío Pack',
@@ -83,6 +84,7 @@ const shipStock = {
   'Envío a domicilio Estándar - shipnow': 'Deposito SN',
   'Envío a domicilio Estándar - shipnow ': 'Deposito SN',
   DHL: 'Juncal',
+  'Punto de retiro': 'Deposito EPack',
   'Punto de Retiro': 'Deposito EPack',
   'Envío a Domicilio Estándar': 'Deposito EPack',
   'Envío a Domicilio Express': 'Deposito EPack',
@@ -117,7 +119,7 @@ export const createOrder = async (id) => {
       cuotas: 1,
     }
 
-    let shipData = {
+    let shipBody = {
       idEP: `TN-${orderData.number}`,
       estado: 'Pendiente',
       tipoEnvio: shipType[orderData.shipping_option],
@@ -168,7 +170,7 @@ export const createOrder = async (id) => {
 
     const ship = await prisma.shipment.create({
       data: {
-        ...shipData,
+        ...shipBody,
       },
     })
 
