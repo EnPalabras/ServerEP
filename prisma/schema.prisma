@@ -60,15 +60,15 @@ model Shipment {
   pais String?  @db.VarChar(255)
 
   Order   Orders     @relation(fields: [idEP], references: [idEP], onDelete: Cascade)
-  Stock   StockPoint     @relation(fields: [stockDesde], references: [nombre], onDelete: Cascade)
+  // Stock   StockPoint     @relation(fields: [stockDesde], references: [nombre], onDelete: Cascade)
 }
 
-model StockPoint {
-  id String @id @default(cuid())
-  nombre String  @db.VarChar(255) @unique
+// model StockPoint {
+//   id String @id @default(cuid())
+//   nombre String  @db.VarChar(255) @unique
 
-  Shipment Shipment[]
-}
+//   Shipment Shipment[]
+// }
 
 model Payments {
   id     String     @id @default(cuid())

@@ -166,7 +166,7 @@ export const createOrder = async (id) => {
       },
     })
 
-    const ship = await prisma.shipments.create({
+    const ship = await prisma.shipment.create({
       data: {
         ...shipData,
       },
