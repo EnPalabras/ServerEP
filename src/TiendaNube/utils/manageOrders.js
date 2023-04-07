@@ -259,11 +259,49 @@ export const createOrder = async (id) => {
 }
 
 export const updateOrder = async (id) => {
-  const order = await getOrder(id)
-  const { number } = order
-  console.log(number)
+  try {
+    const orderData = await getOrder(id)
 
-  return { number, id }
+    await prisma.orders.update({
+      where: {
+        idEP: `TN-${id}`,
+      },
+      data: {
+        estado: orderStatus[orderData.status],
+      },
+    })
+
+    let fechaLiquidacion = orderData.paid_at
+      ? new Date(orderData.paid_at)
+      : null
+    let montoRecibido = parseFloat(orderData.total)
+
+    if (orderData.gateway_name === 'Mercado Pago') {
+      const payData = await getPayment(orderData.gateway_id)
+      ;(fechaLiquidacion = payData.money_release_date
+        ? new Date(payData.money_release_date)
+        : null),
+        (montoRecibido = payData.transaction_details.net_received_amount)
+    }
+
+    await prisma.payments.update({
+      where: {
+        idEP: `TN-${id}`,
+        tipoPago: gatewayTypes[orderData.gateway_name],
+      },
+
+      data: {
+        estado: orderData.payment_status,
+        fechaPago: orderData.paid_at ? new Date(orderData.paid_at) : null,
+        fechaLiquidacion,
+        montoRecibido,
+      },
+    })
+
+    return { message: 'Ok' }
+  } catch (error) {
+    return { message: 'Error' }
+  }
 }
 
 export const cancelOrder = async (id) => {
