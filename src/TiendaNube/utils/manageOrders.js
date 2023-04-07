@@ -90,14 +90,19 @@ const shipStock = {
   'Envío a Domicilio Express': 'Deposito EPack',
 }
 
+const orderStatus = {
+  open: 'Abierta',
+  closed: 'Archivada',
+  cancelled: 'Cancelada',
+}
+
 export const createOrder = async (id) => {
   try {
     const orderData = await getOrder(id)
-    console.log(orderData.number)
 
     let orderBody = {
       idEP: `TN-${orderData.number}`,
-      estado: orderData.status,
+      estado: orderStatus[orderData.status],
       fechaCreada: new Date(orderData.created_at),
       canalVenta: 'Tienda Nube',
       nombre: orderData.customer.name,
@@ -156,19 +161,19 @@ export const createOrder = async (id) => {
         cuotas: payData.installments,
       }
     }
-    const order = await prisma.orders.create({
+    await prisma.orders.create({
       data: {
         ...orderBody,
       },
     })
 
-    const payment = await prisma.payments.create({
+    await prisma.payments.create({
       data: {
         ...paymentBody,
       },
     })
 
-    const ship = await prisma.shipment.create({
+    await prisma.shipment.create({
       data: {
         ...shipBody,
       },
