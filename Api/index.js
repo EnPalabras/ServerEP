@@ -9,51 +9,51 @@ apiRoutes.use('/tienda-nube', TiendaNube)
 apiRoutes.use('/mercado-libre', MercadoLibre)
 
 apiRoutes.get('/', async (req, res) => {
-  const result = await prisma.orders.findMany({
-    where: {
-      OR: [{ idEP: 'TN-18213' }, { idEP: 'TN-18216' }],
-    },
-    include: {
-      Products: true,
-      Discounts: true,
-      Shipment: true,
-      Payments: true,
-    },
-  })
+  //   const result = await prisma.orders.findMany({
+  //     where: {
+  //       OR: [{ idEP: 'TN-18213' }, { idEP: 'TN-18216' }],
+  //     },
+  //     include: {
+  //       Products: true,
+  //       Discounts: true,
+  //       Shipment: true,
+  //       Payments: true,
+  //     },
+  //   })
 
-  const withConditions = await prisma.orders.findMany({
-    where: {
-      Payments: {
-        some: {
-          estado: 'paid',
-        },
-      },
-    },
+  //   const withConditions = await prisma.orders.findMany({
+  //     where: {
+  //       Payments: {
+  //         some: {
+  //           estado: 'paid',
+  //         },
+  //       },
+  //     },
 
-    include: {
-      Products: true,
-      Payments: true,
-    },
-  })
+  //     include: {
+  //       Products: true,
+  //       Payments: true,
+  //     },
+  //   })
 
-  BigInt.prototype.toJSON = function () {
-    return parseInt(this.toString())
-  }
+  //   BigInt.prototype.toJSON = function () {
+  //     return parseInt(this.toString())
+  //   }
 
-  const sumOf = await prisma.$queryRaw`
-    SELECT DATE_TRUNC('day', "Orders"."fechaCreada") AS "Date",
-    COUNT("Products"."cantidad") AS "Cantidad",
-    "Products"."producto" AS "Producto"
-    FROM "Orders"
-    JOIN "Payments"
-    ON "Orders"."idEP" = "Payments"."idEP"
-    JOIN "Products" 
-    ON "Orders"."idEP" = "Products"."idEP" 
+  //   const sumOf = await prisma.$queryRaw`
+  //     SELECT DATE_TRUNC('day', "Orders"."fechaCreada") AS "Date",
+  //     COUNT("Products"."cantidad") AS "Cantidad",
+  //     "Products"."producto" AS "Producto"
+  //     FROM "Orders"
+  //     JOIN "Payments"
+  //     ON "Orders"."idEP" = "Payments"."idEP"
+  //     JOIN "Products"
+  //     ON "Orders"."idEP" = "Products"."idEP"
 
-    WHERE "Payments"."estado" = 'paid'
-    GROUP BY "Date", "Producto"
-    ORDER BY "Date" ASC
-    `
+  //     WHERE "Payments"."estado" = 'paid'
+  //     GROUP BY "Date", "Producto"
+  //     ORDER BY "Date" ASC
+  //     `
 
   const JSON = await prisma.$queryRaw`
 
