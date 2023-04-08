@@ -251,10 +251,16 @@ export const createOrder = async (id) => {
       })
     })
 
-    return { message: 'Ok' }
+    return { status: 201, message: 'Order register created' }
   } catch (error) {
-    console.log(error)
-    return { message: 'Error' }
+    if (error.code === 'P2002') {
+      return {
+        status: 404,
+        message: `Order with id ${id} already exists`,
+        error: error,
+      }
+    }
+    return { status: 408, message: 'Error', error: error }
   }
 }
 
@@ -264,7 +270,7 @@ export const updateOrder = async (id) => {
 
     await prisma.orders.update({
       where: {
-        idEP: `TN-${id}`,
+        idEP: `TN-${orderData.number}`,
       },
       data: {
         estado: orderStatus[orderData.status],
@@ -283,10 +289,11 @@ export const updateOrder = async (id) => {
         : null),
         (montoRecibido = payData.transaction_details.net_received_amount)
     }
+    console.log(orderData.number)
 
     await prisma.payments.update({
       where: {
-        idEP: `TN-${id}`,
+        idEP: `TN-${orderData.number}`,
         tipoPago: gatewayTypes[orderData.gateway_name],
       },
 
@@ -298,9 +305,16 @@ export const updateOrder = async (id) => {
       },
     })
 
-    return { message: 'Ok' }
+    return {
+      status: 202,
+      message: 'Order Updated Successfully',
+    }
   } catch (error) {
-    return { message: 'Error' }
+    return {
+      status: 408,
+      message: 'Error Updating Order',
+      error: error,
+    }
   }
 }
 

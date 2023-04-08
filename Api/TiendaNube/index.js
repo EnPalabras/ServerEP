@@ -27,20 +27,24 @@ TiendaNube.post('/', async (req, res) => {
 
   if (event === 'order/created') {
     const request = await createOrder(id)
-    if (request.message === 'Error') {
-      return res.status(500).json({ message: 'Error creating order' })
+    if (request.status !== 201) {
+      return res
+        .status(request.status ?? 500)
+        .json({ message: request.message, error: request.error })
     } else {
-      return res.status(201).json({ message: 'Order created' })
+      return res.status(request.status).json({ message: request.message })
     }
   }
 
   if (event === 'order/paid') {
     const request = await updateOrder(id)
 
-    if (request.message === 'Error') {
-      return res.status(500).json({ message: 'Error updating order' })
+    if (request.status !== 202) {
+      return res
+        .status(request.status ?? 500)
+        .json({ message: request.message, error: request.error })
     } else {
-      return res.status(201).json({ message: 'Order updated' })
+      return res.status(request.status).json({ message: request.message })
     }
   }
 
