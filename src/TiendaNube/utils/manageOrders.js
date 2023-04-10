@@ -289,9 +289,8 @@ export const updateOrder = async (id) => {
         : null),
         (montoRecibido = payData.transaction_details.net_received_amount)
     }
-    console.log(orderData.number)
 
-    await prisma.payments.update({
+    await prisma.payments.updateMany({
       where: {
         idEP: `TN-${orderData.number}`,
         tipoPago: gatewayTypes[orderData.gateway_name],
@@ -300,8 +299,8 @@ export const updateOrder = async (id) => {
       data: {
         estado: orderData.payment_status,
         fechaPago: orderData.paid_at ? new Date(orderData.paid_at) : null,
-        fechaLiquidacion,
-        montoRecibido,
+        fechaLiquidacion: fechaLiquidacion,
+        montoRecibido: montoRecibido,
       },
     })
 
@@ -319,9 +318,54 @@ export const updateOrder = async (id) => {
 }
 
 export const cancelOrder = async (id) => {
-  const order = await getOrder(id)
-  const { number } = order
-  console.log(number)
+  try {
+    const orderData = await getOrder(id)
 
-  return { number }
+    await prisma.orders.update({
+      where: {
+        idEP: `TN-${orderData.number}`,
+      },
+      data: {
+        estado: orderStatus[orderData.status],
+      },
+    })
+
+    let fechaLiquidacion = orderData.paid_at
+      ? new Date(orderData.paid_at)
+      : null
+    let montoRecibido = parseFloat(orderData.total)
+
+    if (orderData.gateway_name === 'Mercado Pago') {
+      const payData = await getPayment(orderData.gateway_id)
+      ;(fechaLiquidacion = payData.money_release_date
+        ? new Date(payData.money_release_date)
+        : null),
+        (montoRecibido = payData.transaction_details.net_received_amount)
+    }
+
+    await prisma.payments.updateMany({
+      where: {
+        idEP: `TN-${orderData.number}`,
+        tipoPago: gatewayTypes[orderData.gateway_name],
+      },
+
+      data: {
+        estado: orderStatus[orderData.status],
+        fechaPago: orderData.paid_at ? new Date(orderData.paid_at) : null,
+        fechaLiquidacion: fechaLiquidacion,
+        montoRecibido: montoRecibido,
+      },
+    })
+
+    return {
+      status: 202,
+      message: 'Order Updated Successfully',
+    }
+  } catch (error) {
+    return {
+      status: 408,
+      message: 'Error Updating Order',
+      error: error,
+    }
+  }
 }
