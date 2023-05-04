@@ -19,7 +19,7 @@ MercadoLibre.post('/', async (req, res) => {
 
   const id = resource.split('/').pop()
 
-  console.log(`id: ${id}, topic: ${topic}`)
+  console.log(`id : ${id}, topic: ${topic}`)
 
   return res.status(200).json({ body })
 })
