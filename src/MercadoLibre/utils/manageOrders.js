@@ -16,5 +16,5 @@ export const updateOrder = async (id) => {
 }
 
 export const cancelOrder = async (id) => {
-  return id
+  return { id: id }
 }
