@@ -80,6 +80,7 @@ model Payments {
   fechaLiquidacion DateTime? 
   montoTotal Float?
   montoRecibido Float?
+  gatewayId  String?  @db.VarChar(255)
   cuotas Int?
   
   Order   Orders     @relation(fields: [idEP], references: [idEP], onDelete: Cascade)

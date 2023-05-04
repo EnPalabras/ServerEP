@@ -121,6 +121,7 @@ export const createOrder = async (id) => {
       montoTotal: parseFloat(orderData.total),
       fechaLiquidacion: orderData.paid_at ? new Date(orderData.paid_at) : null,
       montoRecibido: parseFloat(orderData.total),
+      gatewayId: orderData.gateway_id,
       cuotas: 1,
     }
 

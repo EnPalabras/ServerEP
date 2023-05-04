@@ -1,16 +1,26 @@
 import express from 'express'
+import {
+  createOrder,
+  updateOrder,
+  cancelOrder,
+} from '../../src/MercadoLibre/utils/manageOrders.js'
 
 const MercadoLibre = express.Router()
 
 MercadoLibre.get('/', async (req, res) => {
-  return res.status(200).json({
-    message: 'Data fetch',
+  res.json({
+    message: 'Only POST requests available',
   })
 })
 
 MercadoLibre.post('/', async (req, res) => {
   const { body } = req
-  console.log(body)
+  const { topic, resource } = body
+
+  const id = resource.split('/').pop()
+
+  console.log(`id: ${id}, topic: ${topic}`)
+
   return res.status(200).json({ body })
 })
 
