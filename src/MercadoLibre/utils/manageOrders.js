@@ -134,6 +134,7 @@ export const manageOrder = async (id) => {
 
     return { status: 201, message: 'Order register created' }
   } catch (error) {
+    console.log(error)
     if (error.code === 'P2002') {
       return {
         status: 404,
