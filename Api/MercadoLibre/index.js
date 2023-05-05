@@ -2,6 +2,7 @@ import express from 'express'
 import {
   createOrder,
   updateOrder,
+  manageOrder,
   cancelOrder,
 } from '../../src/MercadoLibre/utils/manageOrders.js'
 
@@ -16,10 +17,22 @@ MercadoLibre.get('/', async (req, res) => {
 MercadoLibre.post('/', async (req, res) => {
   const { body } = req
   const { topic, resource } = body
-
   const id = resource.split('/').pop()
 
   console.log(`id : ${id}, topic: ${topic}`)
+
+  if (topic === 'orders_v2') {
+    const request = manageOrder(id)
+
+    if (request.status !== 202) {
+      return res
+
+        .status(request.status ?? 500)
+        .json({ message: request.message, error: request.error })
+    } else {
+      return res.status(request.status).json({ message: request.message })
+    }
+  }
 
   return res.status(200).json({ body })
 })
