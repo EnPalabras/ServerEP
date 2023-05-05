@@ -57,7 +57,6 @@ export const manageOrder = async (id) => {
   console.log(`id : ${id}`)
   try {
     const { orderData, dniData } = await getOrder(id)
-    console.log(orderData)
     let orderBody = {
       idEP: `ML-${orderData.shipping.id}`,
       estado: orderStatus[orderData.status],

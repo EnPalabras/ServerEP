@@ -22,7 +22,7 @@ MercadoLibre.post('/', async (req, res) => {
   console.log(`id : ${id}, topic: ${topic}`)
 
   if (topic === 'orders_v2') {
-    const request = manageOrder(id)
+    const request = await manageOrder(id)
 
     if (request.status !== 202) {
       return res
