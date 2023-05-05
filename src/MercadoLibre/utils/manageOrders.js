@@ -54,6 +54,7 @@ const productos = {
 }
 
 export const manageOrder = async (id) => {
+  console.log(`id : ${id}`)
   try {
     const { orderData, dniData } = await getOrder(id)
 
@@ -143,7 +144,6 @@ export const manageOrder = async (id) => {
     }
     return { status: 408, message: 'Error', error: error }
   }
-  return id
 }
 
 export const cancelOrder = async (id) => {
