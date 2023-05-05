@@ -66,7 +66,7 @@ export const manageOrder = async (id) => {
       mail: null,
       DNI: dniData.billing_info.doc_number,
       telefono: null,
-      externalId: orderData.shipping.id,
+      externalId: `${orderData.shipping.id}`,
     }
 
     let productsOfOrder = []
