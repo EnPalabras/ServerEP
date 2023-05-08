@@ -100,18 +100,27 @@ export const createOrder = async (id) => {
   try {
     const orderData = await getOrder(id)
 
-    const probandoDate2 = new Date(
-      new Date(orderData.created_at).toLocaleString('default', {
+    const probandoDate = new Date(orderData.created_at).toLocaleString(
+      'es-AR',
+      {
         timeZone: 'America/Argentina/Buenos_Aires',
-      })
+      }
     )
-    console.log(probandoDate2)
+
+    const probandoDate2 = new Date(probandoDate)
+
+    console.log('probando', probandoDate)
+    console.log('probando2', probandoDate2)
+
+    const date = new Date(probandoDate, 'YYYY-MM-DDTHH:MM:SSZ')
+
+    console.log('date', date)
 
     let orderBody = {
       idEP: `TN-${orderData.number}`,
       estado: orderStatus[orderData.status],
       fechaCreada: new Date(
-        new Date(orderData.created_at).toLocaleString('default', {
+        new Date(orderData.created_at).toLocaleString('es-AR', {
           timeZone: 'America/Argentina/Buenos_Aires',
         })
       ),
