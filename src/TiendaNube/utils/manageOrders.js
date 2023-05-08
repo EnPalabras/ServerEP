@@ -103,7 +103,9 @@ export const createOrder = async (id) => {
     let orderBody = {
       idEP: `TN-${orderData.number}`,
       estado: orderStatus[orderData.status],
-      fechaCreada: new Date(orderData.created_at),
+      fechaCreada: new Date(orderData.created_at).toLocaleString('es-AR', {
+        timeZone: 'America/Argentina/Buenos_Aires',
+      }),
       canalVenta: 'Tienda Nube',
       nombre: orderData.customer.name,
       mail: orderData.customer.email,
@@ -117,9 +119,17 @@ export const createOrder = async (id) => {
       estado: orderData.payment_status,
       tipoPago: gatewayTypes[orderData.gateway_name],
       cuentaDestino: paymentDestination[orderData.gateway_name],
-      fechaPago: orderData.paid_at ? new Date(orderData.paid_at) : null,
+      fechaPago: orderData.paid_at
+        ? new Date(orderData.paid_at).toLocaleString('es-AR', {
+            timeZone: 'America/Argentina/Buenos_Aires',
+          })
+        : null,
       montoTotal: parseFloat(orderData.total),
-      fechaLiquidacion: orderData.paid_at ? new Date(orderData.paid_at) : null,
+      fechaLiquidacion: orderData.paid_at
+        ? new Date(orderData.paid_at).toLocaleString('es-AR', {
+            timeZone: 'America/Argentina/Buenos_Aires',
+          })
+        : null,
       montoRecibido: parseFloat(orderData.total),
       gatewayId: orderData.gateway_id,
       cuotas: 1,
@@ -133,7 +143,11 @@ export const createOrder = async (id) => {
       costoEnvio: null,
       pagoEnvio: parseFloat(orderData.shipping_cost_customer),
       stockDesde: shipStock[orderData.shipping_option],
-      fechaEnvio: orderData.shipped_at ? new Date(orderData.shipped_at) : null,
+      fechaEnvio: orderData.shipped_at
+        ? new Date(orderData.shipped_at).toLocaleString('es-AR', {
+            timeZone: 'America/Argentina/Buenos_Aires',
+          })
+        : null,
       fechaEntrega: null,
       fechaRebotado: null,
       codigoPostal: orderData.shipping_address.zipcode
@@ -156,7 +170,9 @@ export const createOrder = async (id) => {
       paymentBody = {
         ...paymentBody,
         fechaLiquidacion: payData.money_release_date
-          ? new Date(payData.money_release_date)
+          ? new Date(payData.money_release_date).toLocaleString('es-AR', {
+              timeZone: 'America/Argentina/Buenos_Aires',
+            })
           : null,
         montoRecibido: payData.transaction_details.net_received_amount,
         cuotas: payData.installments,
@@ -299,7 +315,11 @@ export const updateOrder = async (id) => {
 
       data: {
         estado: orderData.payment_status,
-        fechaPago: orderData.paid_at ? new Date(orderData.paid_at) : null,
+        fechaPago: orderData.paid_at
+          ? new Date(orderData.paid_at).toLocaleString('es-AR', {
+              timeZone: 'America/Argentina/Buenos_Aires',
+            })
+          : null,
         fechaLiquidacion: fechaLiquidacion,
         montoRecibido: montoRecibido,
       },
@@ -332,14 +352,18 @@ export const cancelOrder = async (id) => {
     })
 
     let fechaLiquidacion = orderData.paid_at
-      ? new Date(orderData.paid_at)
+      ? new Date(orderData.paid_at).toLocaleString('es-AR', {
+          timeZone: 'America/Argentina/Buenos_Aires',
+        })
       : null
     let montoRecibido = parseFloat(orderData.total)
 
     if (orderData.gateway_name === 'Mercado Pago') {
       const payData = await getPayment(orderData.gateway_id)
       ;(fechaLiquidacion = payData.money_release_date
-        ? new Date(payData.money_release_date)
+        ? new Date(payData.money_release_date).toLocaleString('es-AR', {
+            timeZone: 'America/Argentina/Buenos_Aires',
+          })
         : null),
         (montoRecibido = payData.transaction_details.net_received_amount)
     }
@@ -352,7 +376,11 @@ export const cancelOrder = async (id) => {
 
       data: {
         estado: orderStatus[orderData.status],
-        fechaPago: orderData.paid_at ? new Date(orderData.paid_at) : null,
+        fechaPago: orderData.paid_at
+          ? new Date(orderData.paid_at).toLocaleString('es-AR', {
+              timeZone: 'America/Argentina/Buenos_Aires',
+            })
+          : null,
         fechaLiquidacion: fechaLiquidacion,
         montoRecibido: montoRecibido,
       },
