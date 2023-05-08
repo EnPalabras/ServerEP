@@ -58,11 +58,12 @@ export const manageOrder = async (id) => {
   try {
     const { orderData, dniData } = await getOrder(id)
 
-    console.log(
-      new Date(orderData.created_at).toLocaleString({
+    const probandoDate2 = new Date(
+      new Date(orderData.created_at).toLocaleString('es-AR', {
         timeZone: 'America/Argentina/Buenos_Aires',
       })
     )
+    console.log(probandoDate2)
 
     let orderBody = {
       idEP: `ML-${orderData.shipping.id}`,
