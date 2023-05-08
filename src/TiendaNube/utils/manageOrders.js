@@ -40,6 +40,18 @@ const getPayment = async (id) => {
   return data
 }
 
+const setDateTN = (date) => {
+  const datetime = new Date(
+    new Date(date).toLocaleString('sv-SE', {
+      timeZone: 'America/Argentina/Buenos_Aires',
+    })
+  )
+
+  datetime.setHours(datetime.getHours() - 3)
+
+  return datetime
+}
+
 const gatewayTypes = {
   'Mercado Pago': 'Mercado Pago',
   'Transferencia (Válido para Argentina)': 'Transferencia',
@@ -119,11 +131,7 @@ export const createOrder = async (id) => {
     let orderBody = {
       idEP: `TN-${orderData.number}`,
       estado: orderStatus[orderData.status],
-      fechaCreada: new Date(
-        new Date(orderData.created_at).toLocaleString('es-AR', {
-          timeZone: 'America/Argentina/Buenos_Aires',
-        })
-      ),
+      fechaCreada: setDateTN(orderData.created_at),
       canalVenta: 'Tienda Nube',
       nombre: orderData.customer.name,
       mail: orderData.customer.email,
