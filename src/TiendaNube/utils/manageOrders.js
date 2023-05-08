@@ -120,7 +120,7 @@ export const createOrder = async (id) => {
       cuentaDestino: paymentDestination[orderData.gateway_name],
       fechaPago: orderData.paid_at ? setDateTN(orderData.paid_at) : null,
       montoTotal: parseFloat(orderData.total),
-      fechaLiquidacion: orderData.paid_at ? setDateML(orderData.paid_at) : null,
+      fechaLiquidacion: orderData.paid_at ? setDateTN(orderData.paid_at) : null,
       montoRecibido: parseFloat(orderData.total),
       gatewayId: orderData.gateway_id,
       cuotas: 1,
@@ -157,7 +157,7 @@ export const createOrder = async (id) => {
       paymentBody = {
         ...paymentBody,
         fechaLiquidacion: payData.money_release_date
-          ? setDateTN(orderData.money_release_date)
+          ? setDateML(orderData.money_release_date)
           : null,
         montoRecibido: payData.transaction_details.net_received_amount,
         cuotas: payData.installments,
