@@ -101,7 +101,6 @@ export const createOrder = async (id) => {
     const orderData = await getOrder(id)
 
     console.log(
-      'date converted:',
       new Date(orderData.created_at).toLocaleString('es-AR', {
         timeZone: 'America/Argentina/Buenos_Aires',
       })
@@ -277,6 +276,7 @@ export const createOrder = async (id) => {
 
     return { status: 201, message: 'Order register created' }
   } catch (error) {
+    console.log(error)
     if (error.code === 'P2002') {
       return {
         status: 404,
