@@ -110,9 +110,11 @@ export const createOrder = async (id) => {
     let orderBody = {
       idEP: `TN-${orderData.number}`,
       estado: orderStatus[orderData.status],
-      fechaCreada: new Date(orderData.created_at).toLocaleString('es-AR', {
-        timeZone: 'America/Argentina/Buenos_Aires',
-      }),
+      fechaCreada: new Date(
+        new Date(orderData.created_at).toLocaleString('es-AR', {
+          timeZone: 'America/Argentina/Buenos_Aires',
+        })
+      ),
       canalVenta: 'Tienda Nube',
       nombre: orderData.customer.name,
       mail: orderData.customer.email,

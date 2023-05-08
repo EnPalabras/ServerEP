@@ -64,6 +64,7 @@ export const manageOrder = async (id) => {
       })
     )
     console.log(probandoDate2)
+    console.log(orderData.created_at)
 
     let orderBody = {
       idEP: `ML-${orderData.shipping.id}`,
