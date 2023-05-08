@@ -59,17 +59,17 @@ export const manageOrder = async (id) => {
     const { orderData, dniData } = await getOrder(id)
 
     const probandoDate2 = new Date(
-      new Date(orderData.created_at).toLocaleString('es-AR', {
+      new Date(orderData.date_created).toLocaleString('es-AR', {
         timeZone: 'America/Argentina/Buenos_Aires',
       })
     )
     console.log(probandoDate2)
-    console.log(orderData.created_at)
+    console.log(orderData.date_created)
 
     let orderBody = {
       idEP: `ML-${orderData.shipping.id}`,
       estado: orderStatus[orderData.status],
-      fechaCreada: new Date(orderData.created_at).toLocaleString('es-AR', {
+      fechaCreada: new Date(orderData.date_created).toLocaleString('es-AR', {
         timeZone: 'America/Argentina/Buenos_Aires',
       }),
       canalVenta: 'Mercado Libre',
