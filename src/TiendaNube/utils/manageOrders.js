@@ -101,7 +101,7 @@ export const createOrder = async (id) => {
     const orderData = await getOrder(id)
 
     const probandoDate2 = new Date(
-      new Date(orderData.created_at).toLocaleString('es-AR', {
+      new Date(orderData.created_at).toLocaleString('default', {
         timeZone: 'America/Argentina/Buenos_Aires',
       })
     )
@@ -111,7 +111,7 @@ export const createOrder = async (id) => {
       idEP: `TN-${orderData.number}`,
       estado: orderStatus[orderData.status],
       fechaCreada: new Date(
-        new Date(orderData.created_at).toLocaleString('es-AR', {
+        new Date(orderData.created_at).toLocaleString('default', {
           timeZone: 'America/Argentina/Buenos_Aires',
         })
       ),
