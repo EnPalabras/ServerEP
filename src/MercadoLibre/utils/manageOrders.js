@@ -57,6 +57,21 @@ export const manageOrder = async (id) => {
   console.log(`id : ${id}`)
   try {
     const { orderData, dniData } = await getOrder(id)
+
+    console.log(
+      'date converted:',
+      new Date(
+        new Date(orderData.created_at).toLocaleString('es-AR', {
+          timeZone: 'America/Argentina/Buenos_Aires',
+        })
+      ),
+      typeof new Date(
+        new Date(orderData.created_at).toLocaleString('es-AR', {
+          timeZone: 'America/Argentina/Buenos_Aires',
+        })
+      )
+    )
+
     let orderBody = {
       idEP: `ML-${orderData.shipping.id}`,
       estado: orderStatus[orderData.status],
