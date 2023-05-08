@@ -17,6 +17,6 @@ export const setDateML = (date) => {
     })
   )
 
-  datetime.setHours(datetime.getHours() - 3)
+  datetime.setHours(datetime.getHours())
   return datetime
 }
