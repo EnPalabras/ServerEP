@@ -69,9 +69,11 @@ export const manageOrder = async (id) => {
     let orderBody = {
       idEP: `ML-${orderData.shipping.id}`,
       estado: orderStatus[orderData.status],
-      fechaCreada: new Date(orderData.date_created).toLocaleString('es-AR', {
-        timeZone: 'America/Argentina/Buenos_Aires',
-      }),
+      fechaCreada: new Date(
+        new Date(orderData.date_created).toLocaleString('es-AR', {
+          timeZone: 'America/Argentina/Buenos_Aires',
+        })
+      ),
       canalVenta: 'Mercado Libre',
       nombre: `${orderData.buyer.first_name} ${orderData.buyer.last_name}`,
       mail: null,
