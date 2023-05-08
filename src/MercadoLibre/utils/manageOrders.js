@@ -60,16 +60,10 @@ export const manageOrder = async (id) => {
 
     console.log(
       'date converted:',
-        new Date(orderData.created_at).toLocaleString('es-AR', {
-          timeZone: 'America/Argentina/Buenos_Aires',
-        }),
-
-        new Date(orderData.date_created, 
-            'America/Argentina/Buenos_Aires')
-
-      ),
-     
-    
+      new Date(orderData.created_at).toLocaleString('es-AR', {
+        timeZone: 'America/Argentina/Buenos_Aires',
+      })
+    )
 
     let orderBody = {
       idEP: `ML-${orderData.shipping.id}`,

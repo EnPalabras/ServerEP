@@ -100,6 +100,13 @@ export const createOrder = async (id) => {
   try {
     const orderData = await getOrder(id)
 
+    console.log(
+      'date converted:',
+      new Date(orderData.created_at).toLocaleString('es-AR', {
+        timeZone: 'America/Argentina/Buenos_Aires',
+      })
+    )
+
     let orderBody = {
       idEP: `TN-${orderData.number}`,
       estado: orderStatus[orderData.status],
