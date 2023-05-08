@@ -2,6 +2,7 @@ import { Prisma } from '@prisma/client'
 import dotenv from 'dotenv'
 import fetch from 'node-fetch'
 import { prisma } from '../../../lib/prisma.js'
+import { setDateML } from '../../utils/parseDates.js'
 
 dotenv.config()
 
@@ -51,17 +52,6 @@ const productos = {
     'Combo Desconectados + Año Nuevo',
   'Combo Juegos De Cartas Desconectados X 2': 'Combo Desconectados x 2',
   'Juego De Cartas Edición Año En Palabras': 'Año Nuevo',
-}
-
-const setDateML = (date) => {
-  const datetime = new Date(
-    new Date(date).toLocaleString('sv-SE', {
-      timeZone: 'America/Argentina/Buenos_Aires',
-    })
-  )
-
-  datetime.setHours(datetime.getHours() - 3)
-  return datetime
 }
 
 export const manageOrder = async (id) => {

@@ -2,6 +2,7 @@ import { Prisma } from '@prisma/client'
 import dotenv from 'dotenv'
 import fetch from 'node-fetch'
 import { prisma } from '../../../lib/prisma.js'
+import { setDateTN, setDateML } from '../../utils/parseDates.js'
 
 dotenv.config()
 
@@ -38,18 +39,6 @@ const getPayment = async (id) => {
   const data = await response.json()
 
   return data
-}
-
-const setDateTN = (date) => {
-  const datetime = new Date(
-    new Date(date).toLocaleString('sv-SE', {
-      timeZone: 'America/Argentina/Buenos_Aires',
-    })
-  )
-
-  datetime.setHours(datetime.getHours())
-
-  return datetime
 }
 
 const gatewayTypes = {
@@ -131,7 +120,7 @@ export const createOrder = async (id) => {
       cuentaDestino: paymentDestination[orderData.gateway_name],
       fechaPago: orderData.paid_at ? setDateTN(orderData.paid_at) : null,
       montoTotal: parseFloat(orderData.total),
-      fechaLiquidacion: orderData.paid_at ? setDateTN(orderData.paid_at) : null,
+      fechaLiquidacion: orderData.paid_at ? setDateML(orderData.paid_at) : null,
       montoRecibido: parseFloat(orderData.total),
       gatewayId: orderData.gateway_id,
       cuotas: 1,
