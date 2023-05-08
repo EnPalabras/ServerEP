@@ -53,27 +53,26 @@ const productos = {
   'Juego De Cartas Edición Año En Palabras': 'Año Nuevo',
 }
 
+const setDateML = (date) => {
+  const datetime = new Date(
+    new Date(date).toLocaleString('sv-SE', {
+      timeZone: 'America/Argentina/Buenos_Aires',
+    })
+  )
+
+  datetime.setHours(datetime.getHours() - 3)
+  return datetime
+}
+
 export const manageOrder = async (id) => {
   console.log(`id : ${id}`)
   try {
     const { orderData, dniData } = await getOrder(id)
 
-    const probandoDate2 = new Date(
-      new Date(orderData.date_created).toLocaleString('default', {
-        timeZone: 'America/Argentina/Buenos_Aires',
-      })
-    )
-    console.log(probandoDate2)
-    console.log(orderData.date_created)
-
     let orderBody = {
       idEP: `ML-${orderData.shipping.id}`,
       estado: orderStatus[orderData.status],
-      fechaCreada: new Date(
-        new Date(orderData.date_created).toLocaleString('es-AR', {
-          timeZone: 'America/Argentina/Buenos_Aires',
-        })
-      ),
+      fechaCreada: setDateML(orderData.date_created),
       canalVenta: 'Mercado Libre',
       nombre: `${orderData.buyer.first_name} ${orderData.buyer.last_name}`,
       mail: null,
