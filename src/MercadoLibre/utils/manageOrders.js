@@ -59,7 +59,7 @@ export const manageOrder = async (id) => {
     const { orderData, dniData } = await getOrder(id)
 
     console.log(
-      new Date(orderData.created_at).toLocaleString('es-AR', {
+      new Date(orderData.created_at).toLocaleString({
         timeZone: 'America/Argentina/Buenos_Aires',
       })
     )
