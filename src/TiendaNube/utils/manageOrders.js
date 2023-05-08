@@ -47,7 +47,7 @@ const setDateTN = (date) => {
     })
   )
 
-  datetime.setHours(datetime.getHours() - 3)
+  datetime.setHours(datetime.getHours())
 
   return datetime
 }
@@ -112,22 +112,6 @@ export const createOrder = async (id) => {
   try {
     const orderData = await getOrder(id)
 
-    const probandoDate = new Date(orderData.created_at).toLocaleString(
-      'es-AR',
-      {
-        timeZone: 'America/Argentina/Buenos_Aires',
-      }
-    )
-
-    const probandoDate2 = new Date(probandoDate)
-
-    console.log('probando', probandoDate)
-    console.log('probando2', probandoDate2)
-
-    const date = new Date(probandoDate, 'YYYY-MM-DDTHH:MM:SSZ')
-
-    console.log('date', date)
-
     let orderBody = {
       idEP: `TN-${orderData.number}`,
       estado: orderStatus[orderData.status],
@@ -135,7 +119,7 @@ export const createOrder = async (id) => {
       canalVenta: 'Tienda Nube',
       nombre: orderData.customer.name,
       mail: orderData.customer.email,
-      DNI: orderData.customer.identification,
+      DNI: orderData.contact_identification,
       telefono: orderData.customer.phone,
       externalId: `${orderData.id}`,
     }
