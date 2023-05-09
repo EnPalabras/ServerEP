@@ -154,7 +154,7 @@ export const createOrder = async (id) => {
     if (orderData.gateway_name === 'Mercado Pago') {
       const payData = await getPayment(orderData.gateway_id)
 
-      console.log(setDateML(orderData.money_release_date))
+      console.log(setDateML(payData.money_release_date))
 
       paymentBody = {
         ...paymentBody,
@@ -290,7 +290,7 @@ export const updateOrder = async (id) => {
     if (orderData.gateway_name === 'Mercado Pago') {
       const payData = await getPayment(orderData.gateway_id)
       ;(fechaLiquidacion = payData.money_release_date
-        ? setDateTN(orderData.money_release_date)
+        ? setDateTN(payData.money_release_date)
         : null),
         (montoRecibido = payData.transaction_details.net_received_amount)
     }
