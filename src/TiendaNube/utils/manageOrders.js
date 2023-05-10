@@ -116,7 +116,7 @@ export const createOrder = async (id) => {
       DNI: orderData.contact_identification,
       telefono: orderData.customer.phone,
       externalId: `${orderData.id}`,
-      cuponPago: coupon.length > 0 ? coupon[0].code : null,
+      cuponPago: orderData.coupon.length > 0 ? orderData.coupon[0].code : null,
     }
 
     let paymentBody = {
