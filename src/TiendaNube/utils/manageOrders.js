@@ -76,6 +76,11 @@ const shipType = {
   'Punto de Retiro': 'Envío Pack',
   'Envío a Domicilio Estándar': 'Envío Pack',
   'Envío a Domicilio Express': 'Envío Pack',
+  'Envío CABA - 24hs - Comprando antes de las 12hs te llegará en el día. ':
+    'Flete',
+  'Envío CABA - 24hs - Comprando antes de las 12hs te llegará en el día.':
+    'Flete',
+  'Envío CABA - 24hs': 'Flete',
 }
 
 const shipStock = {
@@ -111,13 +116,14 @@ export const createOrder = async (id) => {
       DNI: orderData.contact_identification,
       telefono: orderData.customer.phone,
       externalId: `${orderData.id}`,
+      cuponPago: coupon.length > 0 ? coupon[0].code : null,
     }
 
     let paymentBody = {
       idEP: `TN-${orderData.number}`,
       estado: orderData.payment_status,
-      tipoPago: gatewayTypes[orderData.gateway_name],
-      cuentaDestino: paymentDestination[orderData.gateway_name],
+      tipoPago: gatewayTypes[orderData.gateway_name] ?? null,
+      cuentaDestino: paymentDestination[orderData.gateway_name] ?? null,
       fechaPago: orderData.paid_at ? setDateTN(orderData.paid_at) : null,
       montoTotal: parseFloat(orderData.total),
       fechaLiquidacion: orderData.paid_at ? setDateTN(orderData.paid_at) : null,
@@ -129,11 +135,11 @@ export const createOrder = async (id) => {
     let shipBody = {
       idEP: `TN-${orderData.number}`,
       estado: 'Pendiente',
-      tipoEnvio: shipType[orderData.shipping_option],
+      tipoEnvio: shipType[orderData.shipping_option] ?? null,
       nombreEnvio: orderData.shipping_option_code,
       costoEnvio: null,
       pagoEnvio: parseFloat(orderData.shipping_cost_customer),
-      stockDesde: shipStock[orderData.shipping_option],
+      stockDesde: shipStock[orderData.shipping_option] ?? null,
       fechaEnvio: orderData.shipped_at ? setDateTN(orderData.shipped_at) : null,
       fechaEntrega: null,
       fechaRebotado: null,
@@ -306,6 +312,21 @@ export const updateOrder = async (id) => {
         fechaPago: orderData.paid_at ? setDateTN(orderData.paid_at) : null,
         fechaLiquidacion: fechaLiquidacion,
         montoRecibido: montoRecibido,
+      },
+    })
+
+    await prisma.shipment.updateMany({
+      where: {
+        idEP: `TN-${orderData.number}`,
+        tipoEnvio: shipType[orderData.shipping_option],
+      },
+      data: {
+        estado: 'Pendiente',
+        fechaEnvio: orderData.shipped_at
+          ? setDateTN(orderData.shipped_at)
+          : null,
+        fechaEntrega: null,
+        fechaRebotado: null,
       },
     })
 

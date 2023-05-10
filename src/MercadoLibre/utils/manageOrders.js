@@ -12,10 +12,6 @@ export const createOrder = async (id) => {
   return id
 }
 
-export const updateOrder = async (id) => {
-  return id
-}
-
 const getOrder = async (id) => {
   const URL = `https://api.mercadolibre.com/orders/${id}`
   const headers = {
@@ -36,6 +32,18 @@ const getOrder = async (id) => {
   }
 }
 
+const getShip = async (id) => {
+  const URL = `https://api.mercadolibre.com/shipments/${id}`
+  const headers = {
+    Authorization: AUTH_MERCADOPAGO,
+  }
+
+  const response = await fetch(URL, { headers })
+  const shipData = await response.json()
+
+  return shipData
+}
+
 const orderStatus = {
   paid: 'Finalizada',
   cancelled: 'Cancelada',
@@ -54,6 +62,16 @@ const productos = {
   'Juego De Cartas Edición Año En Palabras': 'Año Nuevo',
 }
 
+const shipType = {
+  fulfillment: 'Correo Meli',
+  self_service: 'Flex',
+}
+
+const shipStock = {
+  fulfillment: 'Deposito MELI',
+  self_service: 'Katy',
+}
+
 export const manageOrder = async (id) => {
   console.log(`id : ${id}`)
   try {
@@ -70,6 +88,8 @@ export const manageOrder = async (id) => {
       telefono: null,
       externalId: `${orderData.shipping.id}`,
     }
+
+    const shipData = await getShip(orderData.shipping.id)
 
     let productsOfOrder = []
 
@@ -134,7 +154,42 @@ export const manageOrder = async (id) => {
       })
     })
 
-    return { status: 201, message: 'Order register created' }
+    let shipBody = {
+      id: orderData.shipping.id,
+      idEP: `ML-${orderData.shipping.id}`,
+      estado: 'Pendiente',
+      tipoEnvio: shipType[shipData.logistic_type] ?? null,
+      nombreEnvio: shipData.logistic_type,
+      costoEnvio: shipData.base_cost,
+      pagoEnvio: 0,
+      stockDesde: shipStock[shipData.logistic_type] ?? null,
+      fechaEnvio: setDateML(shipData.status_history.date_shipped),
+      fechaEntrega: setDateML(shipData.status_history.date_delivered),
+      fechaRebotado: setDateML(shipData.status_history.date_not_delivered),
+      codigoPostal: shipData.receiver_address.zip_code,
+      ciudad: shipData.receiver_address.city.name,
+      provincia: shipData.receiver_address.state.name,
+      pais: shipData.receiver_address.country.name,
+    }
+
+    orderData.payments.forEach((payment) => {
+      if (payment.status === 'approved') {
+        let value = shipBody.pagoEnvio
+        value += payment.shipping_cost
+        shipBody = {
+          ...shipBody,
+          pagoEnvio: value,
+        }
+      }
+    })
+
+    await prisma.shipment.create({
+      data: {
+        ...shipBody,
+      },
+    })
+
+    return { status: 200, message: 'Order register created' }
   } catch (error) {
     console.log(error)
     if (error.code === 'P2002') {
@@ -144,6 +199,30 @@ export const manageOrder = async (id) => {
         error: error,
       }
     }
+    return { status: 408, message: 'Error', error: error }
+  }
+}
+
+export const updateOrder = async (id) => {
+  try {
+    const shipData = await getShip(id)
+
+    await prisma.shipment.updateMany({
+      where: {
+        id: id,
+        idEP: `ML-${id}`,
+      },
+      data: {
+        estado: 'Probando',
+        fechaEnvio: setDateML(shipData.status_history.date_shipped),
+        fechaEntrega: setDateML(shipData.status_history.date_delivered),
+        fechaRebotado: setDateML(shipData.status_history.date_not_delivered),
+      },
+    })
+
+    return { status: 200, message: 'Order updated' }
+  } catch (error) {
+    console.log(error)
     return { status: 408, message: 'Error', error: error }
   }
 }

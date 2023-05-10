@@ -24,9 +24,20 @@ MercadoLibre.post('/', async (req, res) => {
   if (topic === 'orders_v2') {
     const request = await manageOrder(id)
 
-    if (request.status !== 202) {
+    if (request.status !== 200) {
       return res
+        .status(request.status ?? 500)
+        .json({ message: request.message, error: request.error })
+    } else {
+      return res.status(request.status).json({ message: request.message })
+    }
+  }
 
+  if (topic === 'shipments') {
+    const request = await updateOrder(id)
+
+    if (request.status !== 200) {
+      return res
         .status(request.status ?? 500)
         .json({ message: request.message, error: request.error })
     } else {
