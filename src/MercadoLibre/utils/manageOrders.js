@@ -154,7 +154,8 @@ export const manageOrder = async (id) => {
       })
     })
 
-    console.log(shipStock[shipData.logistic_type])
+    console.log('shipStock', shipStock[shipData.logistic_type])
+    console.log('originalStock', shipData.logistic_type)
     console.log(shipType[shipData.logistic_type])
     console.log(setDateML(shipData.status_history.date_shipped))
 
