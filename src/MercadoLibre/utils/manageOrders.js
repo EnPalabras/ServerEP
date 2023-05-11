@@ -213,7 +213,7 @@ export const updateOrder = async (id) => {
 
     await prisma.shipment.updateMany({
       where: {
-        id: id,
+        id: `${id}`,
         idEP: `ML-${id}`,
       },
       data: {
