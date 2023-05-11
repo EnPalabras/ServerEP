@@ -46,11 +46,11 @@ model Shipment {
   id     String     @id @default(cuid())
   idEP   String 
   estado String  @db.VarChar(255)
-  tipoEnvio String  @db.VarChar(255)
+  tipoEnvio String?  @db.VarChar(255)
   nombreEnvio String?  @db.VarChar(255)
   costoEnvio Float?
   pagoEnvio Float?
-  stockDesde String  @db.VarChar(255)
+  stockDesde String?  @db.VarChar(255)
   fechaEnvio DateTime?
   fechaEntrega DateTime?
   fechaRebotado DateTime?

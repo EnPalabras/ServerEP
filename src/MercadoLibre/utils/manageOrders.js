@@ -73,7 +73,6 @@ const shipStock = {
 }
 
 export const manageOrder = async (id) => {
-  console.log(`id : ${id}`)
   try {
     const { orderData, dniData } = await getOrder(id)
 
@@ -90,6 +89,7 @@ export const manageOrder = async (id) => {
     }
 
     const shipData = await getShip(orderData.shipping.id)
+    console.log(shipData)
 
     let productsOfOrder = []
 
