@@ -16,6 +16,7 @@ export const setDateTN = (date) => {
 
 export const setDateML = (date) => {
   if (date === null || date === undefined) {
+    console.log('null')
     return null
   }
   const datetime = new Date(
@@ -25,5 +26,8 @@ export const setDateML = (date) => {
   )
 
   datetime.setHours(datetime.getHours())
+  console.log(datetime)
   return datetime
 }
+
+setDateML(null)
