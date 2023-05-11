@@ -172,6 +172,8 @@ export const manageOrder = async (id) => {
       pais: shipData.receiver_address.country.name,
     }
 
+    console.log(shipBody)
+
     orderData.payments.forEach((payment) => {
       if (payment.status === 'approved') {
         let value = shipBody.pagoEnvio
