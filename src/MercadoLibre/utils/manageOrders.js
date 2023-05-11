@@ -89,7 +89,6 @@ export const manageOrder = async (id) => {
     }
 
     const shipData = await getShip(orderData.shipping.id)
-    console.log(shipData)
 
     let productsOfOrder = []
 
@@ -160,7 +159,7 @@ export const manageOrder = async (id) => {
     console.log(setDateML(shipData.status_history.date_shipped))
 
     let shipBody = {
-      id: orderData.shipping.id,
+      id: `${orderData.shipping.id}`,
       idEP: `ML-${orderData.shipping.id}`,
       estado: 'Pendiente',
       tipoEnvio: shipType[shipData.logistic_type] ?? null,
@@ -176,8 +175,6 @@ export const manageOrder = async (id) => {
       provincia: shipData.receiver_address.state.name,
       pais: shipData.receiver_address.country.name,
     }
-
-    console.log(shipBody)
 
     orderData.payments.forEach((payment) => {
       if (payment.status === 'approved') {
