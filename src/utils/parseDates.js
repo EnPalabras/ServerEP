@@ -29,5 +29,3 @@ export const setDateML = (date) => {
   console.log(datetime)
   return datetime
 }
-
-setDateML(null)
