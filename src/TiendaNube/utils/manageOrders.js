@@ -94,6 +94,11 @@ const shipStock = {
   'Punto de Retiro': 'Deposito EPack',
   'Envío a Domicilio Estándar': 'Deposito EPack',
   'Envío a Domicilio Express': 'Deposito EPack',
+  'Envío CABA - 24hs - Comprando antes de las 12hs te llegará en el día. ':
+    'Juncal',
+  'Envío CABA - 24hs - Comprando antes de las 12hs te llegará en el día.':
+    'Juncal',
+  'Envío CABA - 24hs': 'Juncal',
 }
 
 const orderStatus = {
