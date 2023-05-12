@@ -193,6 +193,8 @@ export const manageOrder = async (id) => {
       },
     })
 
+    console.log('LLEGAMOS AL FINAL DEL MANAGE ORDER')
+
     return { status: 200, message: 'Order register created' }
   } catch (error) {
     console.log(error)
@@ -208,6 +210,7 @@ export const manageOrder = async (id) => {
 }
 
 export const updateOrder = async (id) => {
+  console.log('HACIENDO UN UPDATE')
   try {
     const shipData = await getShip(id)
 
