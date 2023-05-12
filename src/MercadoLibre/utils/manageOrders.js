@@ -92,7 +92,7 @@ export const manageOrder = async (id) => {
 
     let productsOfOrder = []
 
-    if (orderData.pack_id) {
+    if (orderData.pack_id !== null) {
       const headers = {
         Authorization: AUTH_MERCADOPAGO,
       }
@@ -123,7 +123,7 @@ export const manageOrder = async (id) => {
           productsOfOrder.push(productBody)
         })
       })
-    } else if (!orderData.pack_id) {
+    } else if (orderData.pack_id === null) {
       orderData.order_items.forEach((item) => {
         let productBody = {
           id: `${orderData.id}`,
@@ -152,6 +152,8 @@ export const manageOrder = async (id) => {
         },
       })
     })
+
+    let paymentsOfOrder = []
 
     let shipBody = {
       id: `${orderData.shipping.id}`,
@@ -188,8 +190,6 @@ export const manageOrder = async (id) => {
       },
     })
 
-    console.log('LLEGAMOS AL FINAL DEL MANAGE ORDER')
-
     return { status: 200, message: 'Order register created' }
   } catch (error) {
     console.log(error)
@@ -205,7 +205,6 @@ export const manageOrder = async (id) => {
 }
 
 export const updateOrder = async (id) => {
-  console.log('HACIENDO UN UPDATE')
   try {
     const shipData = await getShip(id)
 

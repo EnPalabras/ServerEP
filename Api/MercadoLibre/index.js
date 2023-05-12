@@ -63,13 +63,6 @@ MercadoLibre.post('/', async (req, res) => {
     const request = await manageOrder(id)
 
     console.log(request)
-    // if (request.status !== 200) {
-    //   return res
-    //     .status(request.status ?? 500)
-    //     .json({ message: request.message, error: request.error })
-    // } else {
-    //   return res.status(request.status).json({ message: request.message })
-    // }
   }
 
   // DEBERÍA GUARDAR EN UN ARCHIVO O ALGO LOS QUE DEN ERROR
@@ -77,17 +70,7 @@ MercadoLibre.post('/', async (req, res) => {
   if (topic === 'shipments') {
     const request = await updateOrder(id)
     console.log(request)
-
-    // if (request.status !== 200) {
-    //   return res
-    //     .status(request.status ?? 500)
-    //     .json({ message: request.message, error: request.error })
-    // } else {
-    //   return res.status(request.status).json({ message: request.message })
-    // }
   }
-
-  // return res.status(200).json({ body })
 })
 
 MercadoLibre.all('/', (req, res) => {

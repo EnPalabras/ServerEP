@@ -167,6 +167,7 @@ export const createOrder = async (id) => {
 
       paymentBody = {
         ...paymentBody,
+        id: orderData.gateway_id,
         fechaLiquidacion: payData.money_release_date
           ? setDateML(payData.money_release_date)
           : null,
