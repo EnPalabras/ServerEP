@@ -51,13 +51,11 @@ MercadoLibre.get('/', async (req, res) => {
 // })
 
 MercadoLibre.post('/', async (req, res) => {
+  res.status(200).send({ message: 'Order updated' })
   const { body } = req
   const { topic, resource } = body
   const id = resource.split('/').pop()
-
   console.log(`id : ${id}, topic: ${topic}`)
-
-  res.status(200).send({ message: 'Order updated' })
 
   if (topic === 'orders_v2') {
     const request = await manageOrder(id)
