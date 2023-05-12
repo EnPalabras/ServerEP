@@ -24,6 +24,7 @@ MercadoLibre.post('/', async (req, res) => {
   if (topic === 'orders_v2') {
     const request = await manageOrder(id)
 
+    console.log(request)
     if (request.status !== 200) {
       return res
         .status(request.status ?? 500)
@@ -35,6 +36,7 @@ MercadoLibre.post('/', async (req, res) => {
 
   if (topic === 'shipments') {
     const request = await updateOrder(id)
+    console.log(request)
 
     if (request.status !== 200) {
       return res

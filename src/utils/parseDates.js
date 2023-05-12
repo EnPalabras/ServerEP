@@ -29,19 +29,3 @@ export const setDateML = (date) => {
   console.log(datetime)
   return datetime
 }
-
-const shipStock = {
-  fulfillment: 'Deposito MELI',
-  self_service: 'Juncal',
-}
-
-const shipData = {
-  logistic_type: 'fulfillment',
-}
-
-const getSh = () => {
-  const hola = shipStock[shipData.logistic_type]
-  console.log(hola)
-}
-
-getSh()
