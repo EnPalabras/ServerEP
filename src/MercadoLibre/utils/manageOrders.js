@@ -86,6 +86,7 @@ export const manageOrder = async (id) => {
       DNI: dniData.billing_info.doc_number,
       telefono: null,
       externalId: `${orderData.shipping.id}`,
+      packId: `${orderData.pack_id}` ?? null,
     }
 
     const shipData = await getShip(orderData.shipping.id)
@@ -147,6 +148,7 @@ export const manageOrder = async (id) => {
         console.log(paymentBody)
 
         paymentsOfOrder.push(paymentBody)
+        console.log(paymentsOfOrder)
       })
     } else if (orderData.pack_id === null) {
       orderData.order_items.forEach((item) => {
