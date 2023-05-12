@@ -57,7 +57,7 @@ MercadoLibre.post('/', async (req, res) => {
 
   console.log(`id : ${id}, topic: ${topic}`)
 
-  res.sendStatus(200).json({ message: 'OK' })
+  res.status(200).send({ message: 'Order updated' })
 
   if (topic === 'orders_v2') {
     const request = await manageOrder(id)
