@@ -26,6 +26,5 @@ export const setDateML = (date) => {
   )
 
   datetime.setHours(datetime.getHours())
-  console.log(datetime)
   return datetime
 }

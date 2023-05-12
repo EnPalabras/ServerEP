@@ -72,6 +72,8 @@ MercadoLibre.post('/', async (req, res) => {
     // }
   }
 
+  // DEBERÍA GUARDAR EN UN ARCHIVO O ALGO LOS QUE DEN ERROR
+
   if (topic === 'shipments') {
     const request = await updateOrder(id)
     console.log(request)
