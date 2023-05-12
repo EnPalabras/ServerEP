@@ -202,6 +202,14 @@ export const manageOrder = async (id) => {
       })
     })
 
+    paymentsOfOrder.forEach(async (payment) => {
+      await prisma.payments.create({
+        data: {
+          ...payment,
+        },
+      })
+    })
+
     let shipBody = {
       id: `${orderData.shipping.id}`,
       idEP: `ML-${orderData.shipping.id}`,
