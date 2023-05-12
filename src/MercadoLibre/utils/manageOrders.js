@@ -160,6 +160,28 @@ export const manageOrder = async (id) => {
 
         productsOfOrder.push(productBody)
       })
+
+      const responseMP = await fetch(
+        `https://api.mercadopago.com/v1/payments/${orderData.payments[0].id}`,
+        { headers }
+      )
+      const payment = await responseMP.json()
+
+      let paymentBody = {
+        id: `${payment.id}`,
+        idEP: `ML-${orderData.shipping.id}`,
+        estado: payment.status,
+        tipoPago: 'Mercado Pago',
+        cuentaDestino: 'Mercado Pago',
+        fechaPago: setDateML(payment.date_approved),
+        fechaLiquidacion: setDateML(payment.money_release_date),
+        montoTotal: payment.transaction_details.total_paid_amount,
+        montoRecibido: payment.transaction_details.net_received_amount,
+        gatewayId: `${payment.id}`,
+        cuotas: payment.installments,
+      }
+
+      paymentsOfOrder.push(paymentBody)
     }
 
     await prisma.orders.create({
