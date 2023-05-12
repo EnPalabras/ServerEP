@@ -14,6 +14,42 @@ MercadoLibre.get('/', async (req, res) => {
   })
 })
 
+// MercadoLibre.post('/', async (req, res) => {
+//   const { body } = req
+//   const { topic, resource } = body
+//   const id = resource.split('/').pop()
+
+//   console.log(`id : ${id}, topic: ${topic}`)
+
+//   if (topic === 'orders_v2') {
+//     const request = await manageOrder(id)
+
+//     console.log(request)
+//     if (request.status !== 200) {
+//       return res
+//         .status(request.status ?? 500)
+//         .json({ message: request.message, error: request.error })
+//     } else {
+//       return res.status(request.status).json({ message: request.message })
+//     }
+//   }
+
+//   if (topic === 'shipments') {
+//     const request = await updateOrder(id)
+//     console.log(request)
+
+//     if (request.status !== 200) {
+//       return res
+//         .status(request.status ?? 500)
+//         .json({ message: request.message, error: request.error })
+//     } else {
+//       return res.status(request.status).json({ message: request.message })
+//     }
+//   }
+
+//   return res.status(200).json({ body })
+// })
+
 MercadoLibre.post('/', async (req, res) => {
   const { body } = req
   const { topic, resource } = body
@@ -21,33 +57,35 @@ MercadoLibre.post('/', async (req, res) => {
 
   console.log(`id : ${id}, topic: ${topic}`)
 
+  res.sendStatus(200).json({ message: 'OK' })
+
   if (topic === 'orders_v2') {
     const request = await manageOrder(id)
 
     console.log(request)
-    if (request.status !== 200) {
-      return res
-        .status(request.status ?? 500)
-        .json({ message: request.message, error: request.error })
-    } else {
-      return res.status(request.status).json({ message: request.message })
-    }
+    // if (request.status !== 200) {
+    //   return res
+    //     .status(request.status ?? 500)
+    //     .json({ message: request.message, error: request.error })
+    // } else {
+    //   return res.status(request.status).json({ message: request.message })
+    // }
   }
 
   if (topic === 'shipments') {
     const request = await updateOrder(id)
     console.log(request)
 
-    if (request.status !== 200) {
-      return res
-        .status(request.status ?? 500)
-        .json({ message: request.message, error: request.error })
-    } else {
-      return res.status(request.status).json({ message: request.message })
-    }
+    // if (request.status !== 200) {
+    //   return res
+    //     .status(request.status ?? 500)
+    //     .json({ message: request.message, error: request.error })
+    // } else {
+    //   return res.status(request.status).json({ message: request.message })
+    // }
   }
 
-  return res.status(200).json({ body })
+  // return res.status(200).json({ body })
 })
 
 MercadoLibre.all('/', (req, res) => {
