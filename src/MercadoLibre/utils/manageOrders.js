@@ -183,6 +183,8 @@ export const manageOrder = async (id) => {
         cuotas: payment.installments,
       }
 
+      console.log(paymentBody)
+
       paymentsOfOrder.push(paymentBody)
     }
 
