@@ -92,6 +92,8 @@ export const manageOrder = async (id) => {
 
     let productsOfOrder = []
 
+    let paymentsOfOrder = []
+
     if (orderData.pack_id !== null) {
       const headers = {
         Authorization: AUTH_MERCADOPAGO,
@@ -109,7 +111,7 @@ export const manageOrder = async (id) => {
           { headers }
         )
         const order = await response.json()
-        order.order_items.forEach((item) => {
+        order.order_items.forEach(async (item) => {
           let productBody = {
             id: `${order.id}`,
             idEP: `ML-${orderData.shipping.id}`,
@@ -122,6 +124,27 @@ export const manageOrder = async (id) => {
 
           productsOfOrder.push(productBody)
         })
+        const responseMP = await fetch(
+          `https://api.mercadopago.com/v1/payments/${order.payments[0].id}`,
+          { headers }
+        )
+        const payment = await responseMP.json()
+
+        let paymentBody = {
+          id: `${payment.id}`,
+          idEP: `ML-${orderData.shipping.id}`,
+          estado: payment.status,
+          tipoPago: 'Mercado Pago',
+          cuentaDestino: 'Mercado Pago',
+          fechaPago: setDateML(payment.date_approved),
+          fechaLiquidacion: setDateML(payment.money_release_date),
+          montoTotal: payment.transaction_details.total_paid_amount,
+          montoRecibido: payment.transaction_details.net_received_amount,
+          gatewayId: `${payment.id}`,
+          cuotas: payment.installments,
+        }
+
+        paymentsOfOrder.push(paymentBody)
       })
     } else if (orderData.pack_id === null) {
       orderData.order_items.forEach((item) => {
@@ -131,7 +154,7 @@ export const manageOrder = async (id) => {
           producto: productos[item.item.title],
           cantidad: item.quantity,
           precioUnitario: item.unit_price,
-          precioTotal: item.full_unit_price,
+          precioTotal: item.unit_price * item.quantity,
           moneda: item.currency_id,
         }
 
@@ -152,8 +175,6 @@ export const manageOrder = async (id) => {
         },
       })
     })
-
-    let paymentsOfOrder = []
 
     let shipBody = {
       id: `${orderData.shipping.id}`,
