@@ -160,7 +160,9 @@ export const manageOrder = async (id) => {
 
         productsOfOrder.push(productBody)
       })
-
+      const headers = {
+        Authorization: AUTH_MERCADOPAGO,
+      }
       const responseMP = await fetch(
         `https://api.mercadopago.com/v1/payments/${orderData.payments[0].id}`,
         { headers }
