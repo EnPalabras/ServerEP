@@ -224,7 +224,7 @@ export const manageOrder = async (id) => {
     let shipBody = {
       id: `${orderData.shipping.id}`,
       idEP: `ML-${orderData.shipping.id}`,
-      estado: 'Pendiente',
+      estado: shipData.status,
       tipoEnvio: shipType[shipData.logistic_type] ?? null,
       nombreEnvio: shipData.logistic_type,
       costoEnvio: shipData.base_cost,
@@ -280,7 +280,7 @@ export const updateOrder = async (id) => {
         idEP: `ML-${id}`,
       },
       data: {
-        estado: 'Probando',
+        estado: shipData.status,
         fechaEnvio: setDateML(shipData.status_history.date_shipped),
         fechaEntrega: setDateML(shipData.status_history.date_delivered),
         fechaRebotado: setDateML(shipData.status_history.date_not_delivered),
