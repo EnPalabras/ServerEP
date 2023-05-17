@@ -178,7 +178,7 @@ export const manageOrder = async (id) => {
       const headers = {
         Authorization: AUTH_MERCADOPAGO,
       }
-      const payment = await getPayment(order.payments[0].id)
+      const payment = await getPayment(orderData.payments[0].id)
 
       let paymentBody = {
         id: `${payment.id}`,
