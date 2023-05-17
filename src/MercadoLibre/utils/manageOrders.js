@@ -44,6 +44,22 @@ const getShip = async (id) => {
   return shipData
 }
 
+const getPayment = async (id) => {
+  const URL = `https://api.mercadopago.com/v1/payments/${id}`
+  const headers = {
+    'Content-Type': 'application/json',
+    Authorization: AUTH_MERCADOPAGO,
+  }
+
+  const response = await fetch(URL, {
+    method: 'GET',
+    headers,
+  })
+  const data = await response.json()
+
+  return data
+}
+
 const orderStatus = {
   paid: 'Finalizada',
   cancelled: 'Cancelada',
@@ -86,7 +102,7 @@ export const manageOrder = async (id) => {
       DNI: dniData.billing_info.doc_number,
       telefono: null,
       externalId: `${orderData.shipping.id}`,
-      packId: `${orderData.pack_id}` ?? null,
+      packId: orderData.pack_id ? `${orderData.pack_id}` : null,
     }
 
     const shipData = await getShip(orderData.shipping.id)
@@ -107,10 +123,11 @@ export const manageOrder = async (id) => {
       data.forEach(async (item) => {
         const order_id = item.order_id
 
-        const response = await fetch(
-          `https://api.mercadolibre.com/orders/${order_id}`,
-          { headers }
-        )
+        const URL_PAYMENT = `https://api.mercadolibre.com/orders/${order_id}`
+        console.log(URL_PAYMENT)
+
+        const response = await fetch(URL_PAYMENT, { headers })
+
         const order = await response.json()
         order.order_items.forEach(async (item) => {
           let productBody = {
@@ -125,11 +142,8 @@ export const manageOrder = async (id) => {
 
           productsOfOrder.push(productBody)
         })
-        const responseMP = await fetch(
-          `https://api.mercadopago.com/v1/payments/${order.payments[0].id}`,
-          { headers }
-        )
-        const payment = await responseMP.json()
+
+        const payment = await getPayment(order.payments[0].id)
 
         let paymentBody = {
           id: `${payment.id}`,
@@ -145,10 +159,7 @@ export const manageOrder = async (id) => {
           cuotas: payment.installments,
         }
 
-        console.log(paymentBody)
-
         paymentsOfOrder.push(paymentBody)
-        console.log(paymentsOfOrder)
       })
     } else if (orderData.pack_id === null) {
       orderData.order_items.forEach((item) => {
@@ -167,11 +178,7 @@ export const manageOrder = async (id) => {
       const headers = {
         Authorization: AUTH_MERCADOPAGO,
       }
-      const responseMP = await fetch(
-        `https://api.mercadopago.com/v1/payments/${orderData.payments[0].id}`,
-        { headers }
-      )
-      const payment = await responseMP.json()
+      const payment = await getPayment(order.payments[0].id)
 
       let paymentBody = {
         id: `${payment.id}`,
