@@ -9,6 +9,7 @@ const app = express()
 
 const PORT = process.env.PORT ?? 8000
 
+// Una vez terminado, limitar el acceso a la API a solo el dominio de la aplicación
 app.use(cors())
 app.use(express.json())
 app.use(express.urlencoded({ extended: true }))
