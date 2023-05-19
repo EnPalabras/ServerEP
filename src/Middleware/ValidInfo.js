@@ -4,7 +4,7 @@ export function validateInfo(req, res, next) {
   const { body } = req
   const { email, name, password } = body
 
-  if (!validEmails.includes(email)) {
+  if (!validEmails.includes(email.toLowerCase())) {
     return res.status(401).json({
       message: 'Email not allowed',
     })
