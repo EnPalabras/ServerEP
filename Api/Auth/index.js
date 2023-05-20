@@ -44,6 +44,12 @@ Auth.post('/register', validateInfo, async (req, res) => {
 
     return res.status(201).json({
       message: 'User created',
+      user: {
+        id: newUser.id,
+        email: newUser.email,
+        name: newUser.name,
+        role: newUser.role,
+      },
       token,
     })
   } catch (error) {
@@ -88,6 +94,12 @@ Auth.post('/login', validateLogin, async (req, res) => {
 
     return res.status(200).json({
       message: 'User logged',
+      user: {
+        id: user.id,
+        email: user.email,
+        name: user.name,
+        role: user.role,
+      },
       token,
     })
   } catch (error) {
@@ -104,7 +116,7 @@ Auth.post('/verify', authorize, async (req, res) => {
   try {
     return res.status(200).json({
       message: 'User authorized',
-      payload: user,
+      user: user,
     })
   } catch (error) {
     console.log(error)
