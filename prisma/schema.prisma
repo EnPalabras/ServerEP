@@ -96,6 +96,7 @@ model Payments {
   montoRecibido Float?
   gatewayId  String?  @db.VarChar(255)
   cuotas Int?
+  moneda String?  @db.VarChar(255)
   
   Order   Orders     @relation(fields: [idEP], references: [idEP], onDelete: Cascade)
 

@@ -3,12 +3,14 @@ import MercadoLibre from './MercadoLibre/index.js'
 import TiendaNube from './TiendaNube/index.js'
 import Auth from './Auth/index.js'
 import { prisma } from '../lib/prisma.js'
+import Ventas from './Ventas/index.js'
 
 const apiRoutes = express.Router()
 
 apiRoutes.use('/tienda-nube', TiendaNube)
 apiRoutes.use('/mercado-libre', MercadoLibre)
 apiRoutes.use('/auth', Auth)
+apiRoutes.use('/ventas', Ventas)
 
 apiRoutes.get('/', async (req, res) => {
   //   const result = await prisma.orders.findMany({

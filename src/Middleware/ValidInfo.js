@@ -4,8 +4,6 @@ export function validateInfo(req, res, next) {
   const { body } = req
   const { email, name, password } = body
 
-  console.log(body)
-
   if (!validEmails.includes(email.toLowerCase())) {
     return res.status(401).json({
       message: 'Email not allowed',
@@ -37,6 +35,12 @@ export function validateInfo(req, res, next) {
       requiredFields: ['email', 'name', 'password'],
       invalidFields: ['email'],
     })
+  }
+
+  req.body = {
+    email: email.toLowerCase(),
+    name,
+    password,
   }
 
   next()

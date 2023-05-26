@@ -1,4 +1,3 @@
-import { Prisma } from '@prisma/client'
 import dotenv from 'dotenv'
 import fetch from 'node-fetch'
 import { prisma } from '../../../lib/prisma.js'
@@ -325,7 +324,7 @@ export const updateOrder = async (id) => {
         tipoEnvio: shipType[orderData.shipping_option],
       },
       data: {
-        estado: 'Pendiente',
+        estado: orderData.shipping_status,
         fechaEnvio: orderData.shipped_at
           ? setDateTN(orderData.shipped_at)
           : null,
