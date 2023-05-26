@@ -106,6 +106,21 @@ const orderStatus = {
   cancelled: 'Cancelada',
 }
 
+const markPackedOrder = async (id) => {
+  const URL = `https://api.tiendanube.com/v1/1705915/orders/${id}/pack`
+
+  const headers = {
+    'Content-Type': 'application/json',
+    Authentication: AUTH_TIENDANUBE,
+    'User-Agent': 'En Palabras (enpalabrass@gmail.com)',
+  }
+
+  await fetch(URL, {
+    method: 'POST',
+    headers,
+  })
+}
+
 export const createOrder = async (id) => {
   try {
     const orderData = await getOrder(id)
@@ -174,6 +189,11 @@ export const createOrder = async (id) => {
         cuotas: payData.installments,
       }
     }
+
+    if (orderData.shipping_option === 'Retiras en Punto de retiro Recoleta.') {
+      await markPackedOrder(orderData.id)
+    }
+
     await prisma.orders.create({
       data: {
         ...orderBody,

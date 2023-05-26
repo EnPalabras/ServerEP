@@ -1,5 +1,5 @@
 import express from 'express'
-import { uploadSale } from '../../src/Ventas/manageOrders'
+import { uploadSale } from '../../src/Ventas/manageOrders.js'
 
 const Ventas = express.Router()
 
