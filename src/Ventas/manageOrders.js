@@ -1,6 +1,6 @@
 import dotenv, { parse } from 'dotenv'
 import fetch from 'node-fetch'
-import { prisma } from '../../lib/prisma'
+import { prisma } from '../../lib/prisma.js'
 
 dotenv.config()
 
