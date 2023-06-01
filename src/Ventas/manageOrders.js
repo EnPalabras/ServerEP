@@ -141,7 +141,7 @@ export const getOrders = async (page) => {
       skip: (page - 1) * 10,
       take: 20,
       orderBy: {
-        fechaCreada: 'desc',
+        fechaActualizada: 'desc',
       },
     })
 
