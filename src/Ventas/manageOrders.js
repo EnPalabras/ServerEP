@@ -130,6 +130,28 @@ export const uploadSale = async (body) => {
   }
 }
 
+export const getOrders = async (page) => {
+  try {
+    const orders = await prisma.orders.findMany({
+      include: {
+        Shipment: true,
+        Products: true,
+        Payments: true,
+      },
+      skip: (page - 1) * 10,
+      take: 20,
+      orderBy: {
+        fechaCreada: 'desc',
+      },
+    })
+
+    return { status: 200, message: 'Orders', orders }
+  } catch (error) {
+    console.log(error)
+    return { status: 500, message: 'Error', error }
+  }
+}
+
 const parsePayment = {
   'Mercado Pago': 'Mercado Pago',
   'MP Jochi': 'MP Jochi',

@@ -1,10 +1,33 @@
 import express from 'express'
-import { uploadSale } from '../../src/Ventas/manageOrders.js'
+import { uploadSale, getOrders } from '../../src/Ventas/manageOrders.js'
 
 const Ventas = express.Router()
 
-Ventas.get('/', async (req, res) => {
-  res.json({ message: 'Ventas' })
+const parsePage = (page) => {
+  if (page === undefined) {
+    return 1
+  } else {
+    return parseInt(page)
+  }
+}
+
+Ventas.get('/get-orders', async (req, res) => {
+  const { query } = req
+
+  const page = parsePage(query.page)
+
+  const request = await getOrders(page)
+
+  if (request.status !== 200) {
+    return res
+
+      .status(request.status ?? 500)
+      .json({ message: request.message, error: request.error })
+  } else {
+    return res
+      .status(request.status)
+      .json({ message: request.message, orders: request.orders })
+  }
 })
 
 Ventas.post('/', async (req, res) => {
