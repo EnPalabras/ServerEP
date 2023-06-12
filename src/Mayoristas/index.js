@@ -18,16 +18,7 @@ export const createMayorista = async (body) => {
     comentarios,
   } = body
 
-  if (
-    !nombre ||
-    !CUIT ||
-    !email ||
-    !telefono ||
-    !ciudad ||
-    !provincia ||
-    !pais ||
-    !codigoPostal
-  ) {
+  if (!nombre || !CUIT || !email || !ciudad || !provincia || !pais) {
     return {
       error: true,
       message: 'Faltan datos',
