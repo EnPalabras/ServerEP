@@ -19,6 +19,7 @@ export const createMayorista = async (body) => {
   } = body
 
   if (!nombre || !CUIT || !email || !ciudad || !provincia || !pais) {
+    console.log('Faltan datos')
     return {
       error: true,
       message: 'Faltan datos',
