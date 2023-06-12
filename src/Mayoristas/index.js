@@ -36,7 +36,7 @@ export const createMayorista = async (body) => {
   }
 
   try {
-    const mayorista = await prisma.mayorista.create({
+    const mayorista = await prisma.mayoristas.create({
       data: {
         id: CUIT,
         nombre,
