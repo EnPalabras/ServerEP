@@ -156,3 +156,21 @@ model Stock {
   faltanEntregar Int
   stockPuntos Json?  
 }
+
+model Mayoristas {
+  id   String     @id @default(cuid())
+  nombre String  @db.VarChar(255)
+  email String  @db.VarChar(255)
+  CUIT String?  @db.VarChar(255)
+  telefono String?  @db.VarChar(255)
+  ciudad String?  @db.VarChar(255)
+  provincia String?  @db.VarChar(255)
+  pais String?  @db.VarChar(255)
+  codigoPostal String?  @db.VarChar(255)
+  instagramLink String?  @db.VarChar(255)
+  webLink String?  @db.VarChar(255)
+  otherLinks Json? 
+  comentarios String?  @db.VarChar(1000)
+  fechaCreada DateTime @default(now())
+  fechaActualizada DateTime? @updatedAt
+} 

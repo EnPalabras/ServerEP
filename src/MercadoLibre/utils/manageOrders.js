@@ -1,4 +1,3 @@
-import { Prisma } from '@prisma/client'
 import dotenv from 'dotenv'
 import fetch from 'node-fetch'
 import { prisma } from '../../../lib/prisma.js'
