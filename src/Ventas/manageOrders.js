@@ -130,9 +130,28 @@ export const uploadSale = async (body) => {
   }
 }
 
-export const getOrders = async (page) => {
+export const getOrders = async (page, salesChannel) => {
   try {
+    let sales
+    if (salesChannel === 'all') {
+      sales = [
+        'Tienda Nube',
+        'Mercado Libre',
+        'Regalo',
+        'Reventa',
+        'Empresa',
+        'Personal',
+      ]
+    } else {
+      sales = [salesChannel]
+    }
+
     const orders = await prisma.orders.findMany({
+      where: {
+        canalVenta: {
+          in: sales,
+        },
+      },
       include: {
         Shipment: true,
         Products: true,
