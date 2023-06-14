@@ -59,7 +59,7 @@ Ventas.get('/order/:id', async (req, res) => {
   } else {
     return res
       .status(request.status)
-      .json({ message: request.message, orders: request.orders })
+      .json({ message: request.message, order: request.order })
   }
 })
 
