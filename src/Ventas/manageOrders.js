@@ -179,26 +179,19 @@ export const getOrders = async (page, salesChannel, search) => {
               {
                 idEP: {
                   contains: search,
+                  mode: 'insensitive',
                 },
               },
               {
                 nombre: {
                   contains: search,
+                  mode: 'insensitive',
                 },
               },
               {
                 mail: {
                   contains: search,
-                },
-              },
-              {
-                DNI: {
-                  contains: search,
-                },
-              },
-              {
-                telefono: {
-                  contains: search,
+                  mode: 'insensitive',
                 },
               },
             ],
