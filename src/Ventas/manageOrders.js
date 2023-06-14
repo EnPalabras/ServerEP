@@ -144,7 +144,9 @@ export const getOneOrder = async (id) => {
       },
     })
 
-    return { status: 200, message: 'Order', order }
+    console.log(order)
+
+    return { status: 200, message: 'Order', order: order }
   } catch (error) {
     return { status: 500, message: 'Error', error }
   }
