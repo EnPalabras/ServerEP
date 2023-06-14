@@ -19,15 +19,15 @@ Ventas.get('/get-orders', async (req, res) => {
 
   console.log(page, salesChannel)
 
-  if (
-    salesChannel === undefined ||
-    salesChannel !== 'all' ||
-    salesChannel !== 'TiendaNube' ||
-    salesChannel !== 'MercadoLibre' ||
-    salesChannel !== 'Regalo'
-  ) {
-    return res.status(400).json({ message: 'Invalid sales channel' })
-  }
+  // if (
+  //   salesChannel === undefined ||
+  //   salesChannel !== 'all' ||
+  //   salesChannel !== 'TiendaNube' ||
+  //   salesChannel !== 'MercadoLibre' ||
+  //   salesChannel !== 'Regalo'
+  // ) {
+  //   return res.status(400).json({ message: 'Invalid sales channel' })
+  // }
 
   const request = await getOrders(page, salesChannel)
 

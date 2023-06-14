@@ -131,19 +131,16 @@ export const uploadSale = async (body) => {
 }
 
 export const getOrders = async (page, salesChannel) => {
-  console.log(page, salesChannel)
   try {
-    let sales = []
-    if (salesChannel === 'all') {
-      sales = [
-        'Tienda Nube',
-        'Mercado Libre',
-        'Regalo',
-        'Reventa',
-        'Empresa',
-        'Personal',
-      ]
-    } else {
+    let sales = [
+      'Tienda Nube',
+      'Mercado Libre',
+      'Regalo',
+      'Reventa',
+      'Empresa',
+      'Personal',
+    ]
+    if (salesChannel !== 'all' && salesChannel !== undefined) {
       sales = [salesChannel]
     }
 
