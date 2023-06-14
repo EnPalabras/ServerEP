@@ -17,11 +17,13 @@ Ventas.get('/get-orders', async (req, res) => {
   const page = parsePage(query.page)
   const salesChannel = query.sales
 
+  console.log(page, salesChannel)
+
   if (
     salesChannel === undefined ||
     salesChannel !== 'all' ||
-    salesChannel !== 'Tienda Nube' ||
-    salesChannel !== 'Mercado Libre' ||
+    salesChannel !== 'TiendaNube' ||
+    salesChannel !== 'MercadoLibre' ||
     salesChannel !== 'Regalo'
   ) {
     return res.status(400).json({ message: 'Invalid sales channel' })
