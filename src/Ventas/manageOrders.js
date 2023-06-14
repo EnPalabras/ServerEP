@@ -130,6 +130,25 @@ export const uploadSale = async (body) => {
   }
 }
 
+export const getOneOrder = async (id) => {
+  try {
+    const order = await prisma.orders.findUnique({
+      where: {
+        idEP: id,
+      },
+      include: {
+        Shipment: true,
+        Products: true,
+        Payments: true,
+      },
+    })
+
+    return { status: 200, message: 'Order', order }
+  } catch (error) {
+    return { status: 500, message: 'Error', error }
+  }
+}
+
 export const getOrders = async (page, salesChannel) => {
   try {
     let sales = [

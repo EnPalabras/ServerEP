@@ -1,5 +1,9 @@
 import express from 'express'
-import { uploadSale, getOrders } from '../../src/Ventas/manageOrders.js'
+import {
+  uploadSale,
+  getOrders,
+  getOneOrder,
+} from '../../src/Ventas/manageOrders.js'
 
 const Ventas = express.Router()
 
@@ -34,6 +38,22 @@ Ventas.get('/get-orders', async (req, res) => {
   if (request.status !== 200) {
     return res
 
+      .status(request.status ?? 500)
+      .json({ message: request.message, error: request.error })
+  } else {
+    return res
+      .status(request.status)
+      .json({ message: request.message, orders: request.orders })
+  }
+})
+
+Ventas.get('/order/:id', async (req, res) => {
+  const { id } = req.params
+
+  const request = await getOneOrder(id)
+
+  if (request.status !== 200) {
+    return res
       .status(request.status ?? 500)
       .json({ message: request.message, error: request.error })
   } else {
