@@ -133,7 +133,7 @@ export const uploadSale = async (body) => {
 export const getOneOrder = async (id) => {
   console.log(id)
   try {
-    const order = await prisma.orders.findMany({
+    const order = await prisma.orders.findUnique({
       where: {
         idEP: id,
       },
