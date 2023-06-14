@@ -152,7 +152,7 @@ export const getOneOrder = async (id) => {
   }
 }
 
-export const getOrders = async (page, salesChannel) => {
+export const getOrders = async (page, salesChannel, search) => {
   try {
     let sales = [
       'Tienda Nube',
@@ -168,9 +168,42 @@ export const getOrders = async (page, salesChannel) => {
 
     const orders = await prisma.orders.findMany({
       where: {
-        canalVenta: {
-          in: sales,
-        },
+        AND: [
+          {
+            canalVenta: {
+              in: sales,
+            },
+          },
+          {
+            OR: [
+              {
+                idEP: {
+                  contains: search,
+                },
+              },
+              {
+                nombre: {
+                  contains: search,
+                },
+              },
+              {
+                mail: {
+                  contains: search,
+                },
+              },
+              {
+                DNI: {
+                  contains: search,
+                },
+              },
+              {
+                telefono: {
+                  contains: search,
+                },
+              },
+            ],
+          },
+        ],
       },
       include: {
         Shipment: true,
