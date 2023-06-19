@@ -141,6 +141,7 @@ export const getOneOrder = async (id) => {
         Shipment: true,
         Products: true,
         Payments: true,
+        Discounts: true,
       },
     })
 
