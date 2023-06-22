@@ -173,4 +173,5 @@ model Mayoristas {
   comentarios String?  @db.VarChar(1000)
   fechaCreada DateTime @default(now())
   fechaActualizada DateTime? @updatedAt
+
 } 

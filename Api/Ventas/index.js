@@ -3,6 +3,7 @@ import {
   uploadSale,
   getOrders,
   getOneOrder,
+  deleteOneOrder,
 } from '../../src/Ventas/manageOrders.js'
 
 const Ventas = express.Router()
@@ -42,6 +43,22 @@ Ventas.get('/order/:id', async (req, res) => {
   const { id } = req.params
 
   const request = await getOneOrder(id)
+
+  if (request.status !== 200) {
+    return res
+      .status(request.status ?? 500)
+      .json({ message: request.message, error: request.error })
+  } else {
+    return res
+      .status(request.status)
+      .json({ message: request.message, order: request.order })
+  }
+})
+
+Ventas.delete('/order/:id', async (req, res) => {
+  const { id } = req.params
+
+  const request = await deleteOneOrder(id)
 
   if (request.status !== 200) {
     return res

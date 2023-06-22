@@ -153,6 +153,20 @@ export const getOneOrder = async (id) => {
   }
 }
 
+export const deleteOneOrder = async (id) => {
+  try {
+    const order = await prisma.orders.delete({
+      where: {
+        idEP: id,
+      },
+    })
+
+    return { status: 200, message: 'Order deleted', order: order }
+  } catch (error) {
+    return { status: 500, message: 'Error', error }
+  }
+}
+
 export const getOrders = async (page, salesChannel, search) => {
   try {
     let sales = [
