@@ -218,7 +218,7 @@ export const getOrders = async (page, salesChannel, search) => {
         Products: true,
         Payments: true,
       },
-      skip: (page - 1) * 10,
+      skip: (page - 1) * 20,
       take: 20,
       orderBy: {
         fechaCreada: 'desc',
@@ -246,7 +246,7 @@ export const localSales = async (page, search) => {
           {
             OR: [
               {
-                shipments: {
+                Shipment: {
                   some: {
                     tipoEnvio: {
                       contains: 'Recoleta',
@@ -256,7 +256,7 @@ export const localSales = async (page, search) => {
                 },
               },
               {
-                shipments: {
+                Shipment: {
                   some: {
                     tipoEnvio: {
                       contains: 'Local',
@@ -276,7 +276,7 @@ export const localSales = async (page, search) => {
         Payments: true,
       },
 
-      skip: (page - 1) * 10,
+      skip: (page - 1) * 20,
       take: 20,
       orderBy: {
         fechaCreada: 'desc',
