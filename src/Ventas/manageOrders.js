@@ -238,11 +238,34 @@ export const localSales = async (page, search) => {
       where: {
         AND: [
           {
-            idEP: {
-              contains: search,
-              mode: 'insensitive',
-            },
+            OR: [
+              {
+                nombre: {
+                  contains: search,
+                  mode: 'insensitive',
+                },
+              },
+              {
+                mail: {
+                  contains: search,
+                  mode: 'insensitive',
+                },
+              },
+              {
+                idEP: {
+                  contains: search,
+                  mode: 'insensitive',
+                },
+              },
+              {
+                DNI: {
+                  contains: search,
+                  mode: 'insensitive',
+                },
+              },
+            ],
           },
+
           {
             OR: [
               {
