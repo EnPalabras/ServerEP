@@ -99,7 +99,6 @@ model Payments {
   moneda String?  @db.VarChar(255)
   
   Order   Orders     @relation(fields: [idEP], references: [idEP], onDelete: Cascade)
-
 }
 
 model Discounts {
@@ -110,7 +109,6 @@ model Discounts {
   codigoDescuento String?  @db.VarChar(255)
   
   Order   Orders     @relation(fields: [idEP], references: [idEP], onDelete: Cascade)
- 
 }
 
 model Producciones {
@@ -173,5 +171,4 @@ model Mayoristas {
   comentarios String?  @db.VarChar(1000)
   fechaCreada DateTime @default(now())
   fechaActualizada DateTime? @updatedAt
-
 } 

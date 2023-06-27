@@ -4,6 +4,7 @@ import {
   getOrders,
   getOneOrder,
   deleteOneOrder,
+  localSales,
 } from '../../src/Ventas/manageOrders.js'
 
 const Ventas = express.Router()
@@ -15,6 +16,25 @@ const parsePage = (page) => {
     return parseInt(page)
   }
 }
+
+Ventas.get('/retiro-local', async (req, res) => {
+  const { query } = req
+  const page = parsePage(query.page)
+  const search = query.search
+
+  const request = await localSales(page, search)
+
+  if (request.status !== 200) {
+    return res
+
+      .status(request.status ?? 500)
+      .json({ message: request.message, error: request.error })
+  } else {
+    return res
+      .status(request.status)
+      .json({ message: request.message, orders: request.orders })
+  }
+})
 
 Ventas.get('/get-orders', async (req, res) => {
   const { query } = req
