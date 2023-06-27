@@ -106,6 +106,14 @@ const orderStatus = {
   cancelled: 'Cancelada',
 }
 
+const shipStatus = {
+  unshipped: 'Pendiente',
+  unpacked: 'Pendiente',
+  unfulfilled: 'Pendiente',
+  fulfilled: 'Entregado',
+  shipped: 'Entregado',
+}
+
 const markPackedOrder = async (id) => {
   const URL = `https://api.tiendanube.com/v1/1705915/orders/${id}/pack`
 
@@ -153,7 +161,7 @@ export const createOrder = async (id) => {
 
     let shipBody = {
       idEP: `TN-${orderData.number}`,
-      estado: 'Pendiente',
+      estado: shipStatus[orderData.shipping_status] ?? 'Pendiente',
       tipoEnvio: shipType[orderData.shipping_option] ?? null,
       nombreEnvio: orderData.shipping_option_code,
       costoEnvio: null,
