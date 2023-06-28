@@ -14,7 +14,7 @@ apiRoutes.use('/mercado-libre', MercadoLibre)
 apiRoutes.use('/auth', Auth)
 apiRoutes.use('/ventas', Ventas)
 apiRoutes.use('/mayoristas', Mayoristas)
-apiRoutes.use('/payTN', PayTN)
+apiRoutes.use('/paytn', PayTN)
 
 apiRoutes.get('/', async (req, res) => {
   //   const result = await prisma.orders.findMany({
