@@ -21,8 +21,28 @@ Ventas.get('/retiro-local', async (req, res) => {
   const { query } = req
   const page = parsePage(query.page)
   const search = query.search
+  const shipStatus = query.shipStatus
+  const payStatus = query.payStatus
 
-  const request = await localSales(page, search)
+  const request = await localSales(page, search, shipStatus, payStatus)
+
+  if (request.status !== 200) {
+    return res
+
+      .status(request.status ?? 500)
+      .json({ message: request.message, error: request.error })
+  } else {
+    return res
+      .status(request.status)
+      .json({ message: request.message, orders: request.orders })
+  }
+})
+
+Ventas.post('order/paid/:id', async (req, res) => {
+  const { id } = req.params
+  const { date, amountReceived } = req.body
+
+  const request = await markOrderAsPaid(id, date, Number(amountReceived))
 
   if (request.status !== 200) {
     return res

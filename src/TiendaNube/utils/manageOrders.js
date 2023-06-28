@@ -342,7 +342,6 @@ export const updateOrder = async (id) => {
         estado: orderData.payment_status,
         fechaPago: orderData.paid_at ? setDateTN(orderData.paid_at) : null,
         fechaLiquidacion: fechaLiquidacion,
-        montoRecibido: montoRecibido,
       },
     })
 
@@ -352,7 +351,7 @@ export const updateOrder = async (id) => {
         tipoEnvio: shipType[orderData.shipping_option],
       },
       data: {
-        estado: orderData.shipping_status,
+        estado: shipStatus[orderData.shipping_status] ?? 'Pendiente',
         fechaEnvio: orderData.shipped_at
           ? setDateTN(orderData.shipped_at)
           : null,
