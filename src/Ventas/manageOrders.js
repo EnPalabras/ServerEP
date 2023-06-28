@@ -394,7 +394,6 @@ export const localSales = async (page, search, shipStatus, payStatus) => {
 }
 
 export const markOrderAsPaid = async (paymentId, date, amountReceived) => {
-  console.log(paymentId, date, amountReceived)
   const parseDate = (date) => {
     if (date === null || date === undefined) {
       return null
