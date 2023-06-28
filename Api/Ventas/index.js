@@ -38,7 +38,7 @@ Ventas.get('/retiro-local', async (req, res) => {
   }
 })
 
-Ventas.post('order/paid/:id', async (req, res) => {
+Ventas.post('/order/paid/:id', async (req, res) => {
   const { id } = req.params
   const { date, amountReceived } = req.body
 
