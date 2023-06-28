@@ -336,6 +336,9 @@ export const updateOrder = async (id) => {
       where: {
         idEP: `TN-${orderData.number}`,
         tipoPago: gatewayTypes[orderData.gateway_name],
+        estado: {
+          not: 'Pagado',
+        },
       },
 
       data: {
