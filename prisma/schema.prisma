@@ -48,6 +48,8 @@ model Products {
   id     String     @id @default(cuid())
   idEP   String   
   producto String  @db.VarChar(255)
+  variante String?  @db.VarChar(255)
+  categoria String?  @db.VarChar(255)
   cantidad Int
   precioUnitario Float
   precioTotal Float

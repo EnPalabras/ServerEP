@@ -59,9 +59,101 @@ const paymentDestination = {
 }
 
 const productos = {
-  'DESCONECTADOS - Juego de Cartas': 'Desconectados',
-  'DESTAPADOS - Juego de Cartas': 'Destapados',
-  'AÑO NUEVO - Juego de Cartas': 'Año Nuevo',
+  'desconectados-juego-de-cartas': {
+    nombre: 'Desconectados',
+    categoria: 'Juegos',
+    variante: 'Unica',
+  },
+  'destapados-juego-de-cartas': {
+    nombre: 'Destapados',
+    categoria: 'Juegos',
+    variante: 'Unica',
+  },
+  anonuevo: {
+    nombre: 'Año Nuevo',
+    categoria: 'Juegos',
+    variante: 'Unica',
+  },
+  'buzo-sueno-talle-1': {
+    nombre: 'Año Nuevo',
+    categoria: 'Merch',
+    variante: 'Talle 1',
+  },
+  'buzo-sueno-talle-2': {
+    nombre: 'Año Nuevo',
+    categoria: 'Merch',
+    variante: 'Talle 2',
+  },
+  'buzo-sueno-talle-3': {
+    nombre: 'Año Nuevo',
+    categoria: 'Merch',
+    variante: 'Talle 3',
+  },
+  'buzo-senal-talle-1': {
+    nombre: 'Año Nuevo',
+    categoria: 'Merch',
+    variante: 'Talle 1',
+  },
+  'buzo-senal-talle-2': {
+    nombre: 'Año Nuevo',
+    categoria: 'Merch',
+    variante: 'Talle 2',
+  },
+  'buzo-senal-talle-3': {
+    nombre: 'Año Nuevo',
+    categoria: 'Merch',
+    variante: 'Talle 3',
+  },
+  'remera-club-talle-1': {
+    nombre: 'Año Nuevo',
+    categoria: 'Merch',
+    variante: 'Talle 1',
+  },
+  'remera-club-talle-2': {
+    nombre: 'Año Nuevo',
+    categoria: 'Merch',
+    variante: 'Talle 2',
+  },
+  'remera-club-talle-3': {
+    nombre: 'Año Nuevo',
+    categoria: 'Merch',
+    variante: 'Talle 3',
+  },
+  'remera-preguntame-talle-1': {
+    nombre: 'Año Nuevo',
+    categoria: 'Merch',
+    variante: 'Talle 1',
+  },
+  'remera-preguntame-talle-2': {
+    nombre: 'Año Nuevo',
+    categoria: 'Merch',
+    variante: 'Talle 2',
+  },
+  'remera-preguntame-talle-3': {
+    nombre: 'Año Nuevo',
+    categoria: 'Merch',
+    variante: 'Talle 3',
+  },
+  'remera-atenta-talle-1': {
+    nombre: 'Año Nuevo',
+    categoria: 'Merch',
+    variante: 'Talle 1',
+  },
+  'remera-atenta-talle-2': {
+    nombre: 'Año Nuevo',
+    categoria: 'Merch',
+    variante: 'Talle 2',
+  },
+  'remera-atenta-talle-3': {
+    nombre: 'Año Nuevo',
+    categoria: 'Merch',
+    variante: 'Talle 3',
+  },
+  'tote-bag-talle-unico': {
+    nombre: 'Año Nuevo',
+    categoria: 'Merch',
+    variante: 'Unica',
+  },
 }
 
 const shipType = {
@@ -226,7 +318,9 @@ export const createOrder = async (id) => {
     orderData.products.forEach((product) => {
       let productBody = {
         idEP: `TN-${orderData.number}`,
-        producto: productos[product.name],
+        producto: productos[product.sku].nombre,
+        categoria: productos[product.sku].categoria,
+        variante: productos[product.sku].variante,
         cantidad: parseInt(product.quantity),
         precioUnitario: parseFloat(product.price),
         precioTotal: parseInt(product.quantity) * parseFloat(product.price),
