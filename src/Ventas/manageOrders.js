@@ -480,9 +480,12 @@ export const updateProductsFromOrder = async (id, products, paymentId) => {
       resArray.push(updateProducts)
     })
 
-    const payment = await prisma.payments.findUnique({
+    const payment = await prisma.payments.update({
       where: {
         id: paymentId,
+      },
+      data: {
+        montoTotal: montoTotal,
       },
     })
 
@@ -524,16 +527,18 @@ export const updateProductsFromOrder = async (id, products, paymentId) => {
       return acc + discount.montoDescuento
     }, 0)
 
-    const updatedPayment = await prisma.payments.update({
+    const total = montoTotal + sumShipments - sumDiscounts
+
+    await prisma.payments.update({
       where: {
         id: paymentId,
       },
       data: {
-        montoTotal: montoTotal + sumShipments - sumDiscounts,
+        montoTotal: total,
       },
     })
 
-    return { status: 200, message: resArray, payment: updatedPayment }
+    return { status: 200, message: resArray, payment: payment }
   } catch (error) {
     console.log(error)
     return { status: 500, message: 'Error', error }
