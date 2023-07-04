@@ -490,7 +490,7 @@ export const updateProductsFromOrder = async (id, products, paymentId) => {
     })
 
     if (payment.tipoPago === 'Efectivo') {
-      const discounts = await prisma.discounts.update({
+      await prisma.discounts.update({
         where: {
           idEP: id,
           tipoDescuento: 'Metodo de Pago',
@@ -501,7 +501,42 @@ export const updateProductsFromOrder = async (id, products, paymentId) => {
       })
     }
 
-    return { status: 200, message: resArray, payment: payment }
+    const sumOfShipments = await prisma.shipment.findMany({
+      where: {
+        idEP: id,
+      },
+      select: {
+        pagoEnvio: true,
+      },
+    })
+
+    const sumShipments = sumOfShipments.reduce((acc, shipment) => {
+      return acc + shipment.pagoEnvio
+    }, 0)
+
+    const sumOfDiscounts = await prisma.discounts.findMany({
+      where: {
+        idEP: id,
+      },
+      select: {
+        montoDescuento: true,
+      },
+    })
+
+    const sumDiscounts = sumOfDiscounts.reduce((acc, discount) => {
+      return acc + discount.montoDescuento
+    }, 0)
+
+    const updatedPayment = await prisma.payments.update({
+      where: {
+        id: paymentId,
+      },
+      data: {
+        montoTotal: montoTotal + sumShipments - sumDiscounts,
+      },
+    })
+
+    return { status: 200, message: resArray, payment: updatedPayment }
   } catch (error) {
     console.log(error)
     return { status: 500, message: 'Error', error }
@@ -515,15 +550,18 @@ export const updatePaymentFromOrder = async (
   orderId
 ) => {
   try {
-    const payment = await prisma.payments.update({
+    const sumOfProducts = await prisma.products.findMany({
       where: {
-        id: paymentId,
+        idEP: orderId,
       },
-      data: {
-        tipoPago: tipoPago,
-        cuentaDestino: cuentaDestino,
+      select: {
+        precioTotal: true,
       },
     })
+
+    const sumProducts = sumOfProducts.reduce((acc, product) => {
+      return acc + product.precioTotal
+    }, 0)
 
     if (tipoPago !== 'Efectivo') {
       await prisma.discounts.deleteMany({
@@ -540,31 +578,57 @@ export const updatePaymentFromOrder = async (
         },
       })
 
-      const sumOfProducts = await prisma.products.findMany({
-        where: {
-          idEP: orderId,
-        },
-        select: {
-          precioTotal: true,
-        },
-      })
-
-      const sum = sumOfProducts.reduce((acc, product) => {
-        return acc + product.precioTotal
-      }, 0)
-
       if (discounts.length === 0) {
         await prisma.discounts.create({
           data: {
             idEP: orderId,
             tipoDescuento: 'Metodo de Pago',
-            montoDescuento: sum * 0.1,
+            montoDescuento: sumProducts * 0.1,
           },
         })
       }
     }
 
-    return { status: 200, message: 'Order updated', payment: payment }
+    const sumOfShipments = await prisma.shipment.findMany({
+      where: {
+        idEP: orderId,
+      },
+      select: {
+        pagoEnvio: true,
+      },
+    })
+
+    const sumShipments = sumOfShipments.reduce((acc, shipment) => {
+      return acc + shipment.pagoEnvio
+    }, 0)
+
+    const sumOfDiscounts = await prisma.discounts.findMany({
+      where: {
+        idEP: orderId,
+      },
+      select: {
+        montoDescuento: true,
+      },
+    })
+
+    const sumDiscounts = sumOfDiscounts.reduce((acc, discount) => {
+      return acc + discount.montoDescuento
+    }, 0)
+
+    const total = sumProducts + sumShipments - sumDiscounts
+
+    const updatePayment = await prisma.payments.update({
+      where: {
+        id: paymentId,
+      },
+      data: {
+        montoTotal: total,
+        tipoPago: tipoPago,
+        cuentaDestino: cuentaDestino,
+      },
+    })
+
+    return { status: 200, message: 'Order updated', payment: updatePayment }
   } catch (error) {
     console.log(error)
     return { status: 500, message: 'Error', error }
