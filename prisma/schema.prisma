@@ -148,7 +148,6 @@ model ProductosImprenta {
   Produccion  Producciones     @relation(fields: [idProduccion], references: [id], onDelete: Cascade)
 }
 
-
 model Stock {
   id    Int     @id @default(autoincrement())
   producto String  @db.VarChar(255)
@@ -173,4 +172,13 @@ model Mayoristas {
   comentarios String?  @db.VarChar(1000)
   fechaCreada DateTime @default(now())
   fechaActualizada DateTime? @updatedAt
-} 
+}
+
+model CashMovements {
+  id   String     @id @default(cuid())
+  idEP String
+  fechaCreada DateTime @default(now())
+  cobro Float? 
+  vuelto Float?
+  neto Float?
+}

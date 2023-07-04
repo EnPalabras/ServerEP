@@ -489,6 +489,8 @@ export const updateProductsFromOrder = async (id, products, paymentId) => {
       },
     })
 
+    console.log('payment', payment)
+
     if (payment.tipoPago === 'Efectivo') {
       await prisma.discounts.update({
         where: {
