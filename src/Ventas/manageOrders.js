@@ -494,12 +494,17 @@ export const updateProductsFromOrder = async (id, products, paymentId) => {
     console.log('payment', payment)
 
     if (payment.tipoPago === 'Efectivo') {
-      await prisma.discounts.updateMany({
+      await prisma.discounts.deleteMany({
         where: {
           idEP: id,
           tipoDescuento: 'Metodo de Pago',
         },
+      })
+
+      await prisma.discounts.create({
         data: {
+          idEP: id,
+          tipoDescuento: 'Metodo de Pago',
           montoDescuento: montoTotal * 0.1,
         },
       })
