@@ -480,12 +480,9 @@ export const updateProductsFromOrder = async (id, products, paymentId) => {
       resArray.push(updateProducts)
     })
 
-    const payment = await prisma.payments.update({
+    const payment = await prisma.payments.findUnique({
       where: {
         id: paymentId,
-      },
-      data: {
-        montoTotal: montoTotal,
       },
     })
 
