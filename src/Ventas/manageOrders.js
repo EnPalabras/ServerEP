@@ -429,6 +429,37 @@ export const markOrderAsPaid = async (paymentId, date, amountReceived) => {
   }
 }
 
+export const updateProductsFromOrder = async (id, products) => {
+  try {
+    await prisma.products.deleteMany({
+      where: {
+        idEP: id,
+      },
+    })
+
+    products.forEach(async (product) => {
+      const body = {
+        idEP: id,
+        producto: product.producto,
+        variante: product.variante,
+        categoria: product.categoria,
+        cantidad: product.cantidad,
+        precioUnitario: product.precio,
+        precioTotal: product.cantidad * product.precioUnitario,
+        moneda: product.moneda,
+      }
+      await prisma.products.create({
+        data: { ...body },
+      })
+    })
+
+    return { status: 200, message: 'Order updated' }
+  } catch (error) {
+    console.log(error)
+    return { status: 500, message: 'Error', error }
+  }
+}
+
 const parsePayment = {
   'Mercado Pago': 'Mercado Pago',
   'MP Jochi': 'MP Jochi',

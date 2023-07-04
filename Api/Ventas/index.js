@@ -6,6 +6,7 @@ import {
   deleteOneOrder,
   localSales,
   markOrderAsPaid,
+  updateProductsFromOrder,
 } from '../../src/Ventas/manageOrders.js'
 
 const Ventas = express.Router()
@@ -118,6 +119,22 @@ Ventas.post('/', async (req, res) => {
   const request = await uploadSale(body)
 
   if (request.status !== 201) {
+    return res
+      .status(request.status ?? 500)
+      .json({ message: request.message, error: request.error })
+  } else {
+    return res.status(request.status).json({ message: request.message })
+  }
+})
+
+Ventas.put('/:id/editar-productos', async (req, res) => {
+  const { id } = req.params
+  const { body } = req
+  const { products } = body
+
+  const request = await updateProductsFromOrder(id, products)
+
+  if (request.status !== 200) {
     return res
       .status(request.status ?? 500)
       .json({ message: request.message, error: request.error })
