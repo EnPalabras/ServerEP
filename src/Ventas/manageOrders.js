@@ -437,23 +437,34 @@ export const updateProductsFromOrder = async (id, products) => {
       },
     })
 
-    products.forEach(async (product) => {
-      const body = {
+    let productsOfOrder = []
+
+    products.forEach((product) => {
+      const productBody = {
         idEP: id,
         producto: product.producto,
         variante: product.variante,
         categoria: product.categoria,
-        cantidad: product.cantidad,
-        precioUnitario: product.precio,
-        precioTotal: product.cantidad * product.precioUnitario,
+        cantidad: parseInt(product.cantidad),
+        precioUnitario: parseFloat(product.precioUnitario),
+        precioTotal:
+          parseFloat(product.cantidad) * parseFloat(product.precioUnitario),
         moneda: product.moneda,
       }
-      await prisma.products.create({
-        data: { ...body },
-      })
+      productsOfOrder.push(productBody)
     })
 
-    return { status: 200, message: 'Order updated' }
+    const up = []
+
+    productsOfOrder.forEach(async (product) => {
+      const update = await prisma.products.create({
+        data: { ...product },
+      })
+
+      up.push(update)
+    })
+
+    return { status: 200, message: up }
   } catch (error) {
     console.log(error)
     return { status: 500, message: 'Error', error }
