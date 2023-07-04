@@ -130,16 +130,16 @@ Ventas.post('/', async (req, res) => {
 Ventas.put('/:id/editar-productos', async (req, res) => {
   const { id } = req.params
   const { body } = req
-  const { products } = body
+  const { products, paymentId } = body
 
-  const request = await updateProductsFromOrder(id, products)
+  const request = await updateProductsFromOrder(id, products, paymentId)
 
   if (request.status !== 200) {
     return res
       .status(request.status ?? 500)
       .json({ message: request.message, error: request.error })
   } else {
-    return res.status(request.status).json({ message: request.message })
+    return res.status(request.status).json({ request })
   }
 })
 

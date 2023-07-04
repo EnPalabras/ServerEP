@@ -429,7 +429,7 @@ export const markOrderAsPaid = async (paymentId, date, amountReceived) => {
   }
 }
 
-export const updateProductsFromOrder = async (id, products) => {
+export const updateProductsFromOrder = async (id, products, paymentId) => {
   try {
     await prisma.products.deleteMany({
       where: {
@@ -439,9 +439,13 @@ export const updateProductsFromOrder = async (id, products) => {
 
     let productsOfOrder = []
 
+    const montoTotal = products.reduce((acc, product) => {
+      return acc + parseFloat(product.precioTotal)
+    }, 0)
+
     products.forEach((product) => {
       const productBody = {
-        idEP: id,
+        // idEP: id,
         producto: product.producto,
         variante: product.variante,
         categoria: product.categoria,
@@ -454,17 +458,113 @@ export const updateProductsFromOrder = async (id, products) => {
       productsOfOrder.push(productBody)
     })
 
-    const up = []
+    let resArray = []
 
     productsOfOrder.forEach(async (product) => {
-      const update = await prisma.products.create({
-        data: { ...product },
-      })
+      const updateProducts = await prisma.orders.update({
+        where: {
+          idEP: id,
+        },
+        data: {
+          Products: {
+            create: {
+              ...product,
+            },
+          },
+        },
 
-      up.push(update)
+        include: {
+          Products: true,
+        },
+      })
+      resArray.push(updateProducts)
     })
 
-    return { status: 200, message: up }
+    const payment = await prisma.payments.update({
+      where: {
+        id: paymentId,
+      },
+      data: {
+        montoTotal: montoTotal,
+      },
+    })
+
+    if (payment.tipoPago === 'Efectivo') {
+      const discounts = await prisma.discounts.update({
+        where: {
+          idEP: id,
+          tipoDescuento: 'Metodo de Pago',
+        },
+        data: {
+          montoDescuento: montoTotal * 0.1,
+        },
+      })
+    }
+
+    return { status: 200, message: resArray, payment: payment }
+  } catch (error) {
+    console.log(error)
+    return { status: 500, message: 'Error', error }
+  }
+}
+
+export const updatePaymentFromOrder = async (
+  paymentId,
+  tipoPago,
+  cuentaDestino,
+  orderId
+) => {
+  try {
+    const payment = await prisma.payments.update({
+      where: {
+        id: paymentId,
+      },
+      data: {
+        tipoPago: tipoPago,
+        cuentaDestino: cuentaDestino,
+      },
+    })
+
+    if (tipoPago !== 'Efectivo') {
+      await prisma.discounts.deleteMany({
+        where: {
+          idEP: orderId,
+          tipoDescuento: 'Metodo de Pago',
+        },
+      })
+    } else if (tipoPago === 'Efectivo') {
+      const discounts = await prisma.discounts.findMany({
+        where: {
+          idEP: orderId,
+          tipoDescuento: 'Metodo de Pago',
+        },
+      })
+
+      const sumOfProducts = await prisma.products.findMany({
+        where: {
+          idEP: orderId,
+        },
+        select: {
+          precioTotal: true,
+        },
+      })
+
+      const sum = sumOfProducts.reduce((acc, product) => {
+        return acc + product.precioTotal
+      }, 0)
+
+      if (discounts.length === 0) {
+        await prisma.discounts.create({
+          data: {
+            idEP: orderId,
+            tipoDescuento: 'Metodo de Pago',
+            montoDescuento: sum * 0.1,
+          },
+        })
+      }
+    }
+
+    return { status: 200, message: 'Order updated', payment: payment }
   } catch (error) {
     console.log(error)
     return { status: 500, message: 'Error', error }
