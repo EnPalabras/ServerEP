@@ -335,7 +335,8 @@ export const updateOrder = async (id) => {
     await prisma.payments.updateMany({
       where: {
         idEP: `TN-${orderData.number}`,
-        tipoPago: gatewayTypes[orderData.gateway_name],
+        // Saco la línea de abajo porque en TN cuando se actualiza el pago personalizado cambia el Gateway Name
+        // tipoPago: gatewayTypes[orderData.gateway_name],
         estado: {
           not: 'Pagado',
         },
