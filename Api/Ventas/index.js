@@ -7,6 +7,7 @@ import {
   localSales,
   markOrderAsPaid,
   updateProductsFromOrder,
+  updatePaymentFromOrder,
 } from '../../src/Ventas/manageOrders.js'
 
 const Ventas = express.Router()
@@ -133,6 +134,27 @@ Ventas.put('/:id/editar-productos', async (req, res) => {
   const { products, paymentId } = body
 
   const request = await updateProductsFromOrder(id, products, paymentId)
+
+  if (request.status !== 200) {
+    return res
+      .status(request.status ?? 500)
+      .json({ message: request.message, error: request.error })
+  } else {
+    return res.status(request.status).json({ request })
+  }
+})
+
+Ventas.put('/:id/editar-pago', async (req, res) => {
+  const { id } = req.params
+  const { body } = req
+  const { tipoPago, cuentaDestino, orderId } = body
+
+  const request = await updatePaymentFromOrder(
+    id,
+    tipoPago,
+    cuentaDestino,
+    orderId
+  )
 
   if (request.status !== 200) {
     return res
