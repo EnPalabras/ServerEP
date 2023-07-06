@@ -55,7 +55,7 @@ Ventas.post('/order/paid/:id', async (req, res) => {
   } else {
     return res
       .status(request.status)
-      .json({ message: request.message, orders: request.payment })
+      .json({ message: request.message, orders: request.order })
   }
 })
 

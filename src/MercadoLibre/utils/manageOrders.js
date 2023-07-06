@@ -100,6 +100,7 @@ export const manageOrder = async (id) => {
       mail: null,
       DNI: dniData.billing_info.doc_number,
       telefono: null,
+      montoTotal: parseFloat(orderData.total_amount),
       externalId: `${orderData.shipping.id}`,
       packId: orderData.pack_id ? `${orderData.pack_id}` : null,
     }

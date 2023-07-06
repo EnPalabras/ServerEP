@@ -538,16 +538,22 @@ export const updateProductsFromOrder = async (id, products, paymentId) => {
 
     const total = montoTotal + sumShipments - sumDiscounts
 
-    await prisma.payments.update({
+    const order = await prisma.orders.update({
       where: {
-        id: paymentId,
+        idEP: id,
       },
       data: {
         montoTotal: total,
       },
+
+      include: {
+        Products: true,
+        Payments: true,
+        Discounts: true,
+      },
     })
 
-    return { status: 200, message: resArray, payment: payment }
+    return { status: 200, message: resArray, order }
   } catch (error) {
     console.log(error)
     return { status: 500, message: 'Error', error }

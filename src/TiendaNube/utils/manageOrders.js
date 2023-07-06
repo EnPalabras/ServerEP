@@ -234,6 +234,7 @@ export const createOrder = async (id) => {
       mail: orderData.customer.email,
       DNI: orderData.contact_identification,
       telefono: orderData.customer.phone,
+      montoTotal: parseFloat(orderData.total),
       externalId: `${orderData.id}`,
       cuponPago: orderData.coupon.length > 0 ? orderData.coupon[0].code : null,
     }
@@ -246,7 +247,8 @@ export const createOrder = async (id) => {
       fechaPago: orderData.paid_at ? setDateTN(orderData.paid_at) : null,
       montoTotal: parseFloat(orderData.total),
       fechaLiquidacion: orderData.paid_at ? setDateTN(orderData.paid_at) : null,
-      montoRecibido: parseFloat(orderData.total),
+      montoRecibido:
+        orderData.payment_status === 'paid' ? parseFloat(orderData.total) : 0,
       gatewayId: orderData.gateway_id,
       cuotas: 1,
     }
@@ -416,7 +418,8 @@ export const updateOrder = async (id) => {
     let fechaLiquidacion = orderData.paid_at
       ? setDateTN(orderData.paid_at)
       : null
-    let montoRecibido = parseFloat(orderData.total)
+    let montoRecibido =
+      orderData.payment_status === 'paid' ? parseFloat(orderData.total) : 0
 
     if (orderData.gateway_name === 'Mercado Pago') {
       const payData = await getPayment(orderData.gateway_id)
@@ -487,7 +490,8 @@ export const cancelOrder = async (id) => {
     let fechaLiquidacion = orderData.paid_at
       ? setDateTN(orderData.paid_at)
       : null
-    let montoRecibido = parseFloat(orderData.total)
+    let montoRecibido =
+      orderData.payment_status === 'paid' ? parseFloat(orderData.total) : 0
 
     if (orderData.gateway_name === 'Mercado Pago') {
       const payData = await getPayment(orderData.gateway_id)
