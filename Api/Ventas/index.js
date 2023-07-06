@@ -6,6 +6,7 @@ import {
   deleteOneOrder,
   localSales,
   markOrderAsPaid,
+  setManyPayments,
   updateProductsFromOrder,
   updatePaymentFromOrder,
 } from '../../src/Ventas/manageOrders.js'
@@ -155,6 +156,22 @@ Ventas.put('/:id/editar-pago', async (req, res) => {
     cuentaDestino,
     orderId
   )
+
+  if (request.status !== 200) {
+    return res
+      .status(request.status ?? 500)
+      .json({ message: request.message, error: request.error })
+  } else {
+    return res.status(request.status).json({ request })
+  }
+})
+
+Ventas.put('/:orderId/varios-pagos', async (req, res) => {
+  const { orderId } = req.params
+  const { body } = req
+  const { payments } = body
+
+  const request = await setManyPayments(orderId, payments)
 
   if (request.status !== 200) {
     return res

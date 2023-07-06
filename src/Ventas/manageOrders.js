@@ -1,6 +1,7 @@
 import dotenv, { parse } from 'dotenv'
 import fetch from 'node-fetch'
 import { prisma } from '../../lib/prisma.js'
+import { setDateTN } from '../utils/parseDates.js'
 
 dotenv.config()
 
@@ -654,6 +655,49 @@ export const updatePaymentFromOrder = async (
     })
 
     return { status: 200, message: 'Order updated', payment: updatePayment }
+  } catch (error) {
+    console.log(error)
+    return { status: 500, message: 'Error', error }
+  }
+}
+
+export const setManyPayments = async (orderId, payments) => {
+  try {
+    console.log(orderId)
+    await prisma.payments.deleteMany({
+      where: {
+        idEP: orderId,
+      },
+    })
+
+    let paymentsOfOrder = []
+
+    payments.forEach((payment) => {
+      const paymentBody = {
+        idEP: orderId,
+        estado: 'Pagado',
+        tipoPago: payment.tipoPago,
+        cuentaDestino: payment.cuentaDestino,
+        fechaPago: setDateTN(payment.fechaPago),
+        fechaLiquidacion: setDateTN(payment.fechaLiquidacion),
+        moneda: payment.moneda,
+        montoTotal: parseFloat(payment.montoTotal),
+        montoRecibido: parseFloat(payment.montoRecibido),
+        cuotas: parseInt(payment.cuotas),
+      }
+
+      paymentsOfOrder.push(paymentBody)
+    })
+
+    paymentsOfOrder.forEach(async (payment) => {
+      await prisma.payments.create({
+        data: {
+          ...payment,
+        },
+      })
+    })
+
+    return { status: 200, message: 'Payments updated' }
   } catch (error) {
     console.log(error)
     return { status: 500, message: 'Error', error }
