@@ -273,7 +273,7 @@ export const localSales = async (page, search, shipStatus, payStatus) => {
                 Shipment: {
                   some: {
                     tipoEnvio: {
-                      contains: 'Envío', // esto hay que modificarlo
+                      contains: 'Recoleta',
                       mode: 'insensitive',
                     },
                   },

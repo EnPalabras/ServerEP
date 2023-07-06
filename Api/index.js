@@ -16,7 +16,28 @@ apiRoutes.use('/ventas', Ventas)
 apiRoutes.use('/mayoristas', Mayoristas)
 apiRoutes.use('/paytn', PayTN)
 
-apiRoutes.get('/', async (req, res) => {
+apiRoutes.post('/', async (req, res) => {
+  const results = await prisma.orders.findMany({
+    where: {
+      canalVenta: 'Tienda Nube',
+    },
+
+    select: {
+      externalId: true,
+      idEP: true,
+    },
+  })
+
+  // const deleteSome = await prisma.orders.deleteMany({
+  //   where: {
+  //     idEP: {
+  //       in: results.map((order) => order.idEP),
+  //     },
+  //   },
+  // })
+
+  return res.json(results)
+
   //   const result = await prisma.orders.findMany({
   //     where: {
   //       OR: [{ idEP: 'TN-18213' }, { idEP: 'TN-18216' }],
@@ -63,37 +84,37 @@ apiRoutes.get('/', async (req, res) => {
   //     ORDER BY "Date" ASC
   //     `
 
-  const JSON = await prisma.$queryRaw`
+  // const JSON = await prisma.$queryRaw`
 
-  WITH "Probando" AS (
-    SELECT DATE_TRUNC('day', "Orders"."fechaCreada") AS "Date",
-    
-        JSON_BUILD_OBJECT(
-            'Cantidad', COUNT("Products"."cantidad"),
-            'Producto', "Products"."producto"
-        )
-     AS "Productos"
-    
-    FROM "Orders"
-    JOIN "Payments"
-    ON "Orders"."idEP" = "Payments"."idEP"
-    JOIN "Products" 
-    ON "Orders"."idEP" = "Products"."idEP" 
+  // WITH "Probando" AS (
+  //   SELECT DATE_TRUNC('day', "Orders"."fechaCreada") AS "Date",
 
-    WHERE "Payments"."estado" = 'paid'
-    GROUP BY "Date", "Products"."producto"
-    ORDER BY "Date" ASC
-  ) 
+  //       JSON_BUILD_OBJECT(
+  //           'Cantidad', COUNT("Products"."cantidad"),
+  //           'Producto', "Products"."producto"
+  //       )
+  //    AS "Productos"
 
-    SELECT "Date",
-    JSON_AGG("Productos") AS "Productos"
-    FROM "Probando"
+  //   FROM "Orders"
+  //   JOIN "Payments"
+  //   ON "Orders"."idEP" = "Payments"."idEP"
+  //   JOIN "Products"
+  //   ON "Orders"."idEP" = "Products"."idEP"
 
-    GROUP BY "Date"
+  //   WHERE "Payments"."estado" = 'paid'
+  //   GROUP BY "Date", "Products"."producto"
+  //   ORDER BY "Date" ASC
+  // )
 
-    `
+  //   SELECT "Date",
+  //   JSON_AGG("Productos") AS "Productos"
+  //   FROM "Probando"
 
-  res.send(JSON)
+  //   GROUP BY "Date"
+
+  //   `
+
+  // res.send(JSON)
 })
 
 export default apiRoutes
