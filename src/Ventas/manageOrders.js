@@ -411,6 +411,12 @@ export const markOrderAsPaid = async (paymentId, date, amountReceived) => {
   }
 
   try {
+    const payData = await prisma.payments.findUnique({
+      where: {
+        id: paymentId,
+      },
+    })
+
     const payment = await prisma.payments.update({
       where: {
         id: paymentId,
@@ -420,6 +426,8 @@ export const markOrderAsPaid = async (paymentId, date, amountReceived) => {
         fechaPago: parseDate(date),
         fechaLiquidacion: parseDate(date),
         montoRecibido: amountReceived,
+        montoTotal:
+          payData.tipoPago === 'Efectivo' ? amountReceived : payData.montoTotal,
       },
     })
     return { status: 200, message: 'Order updated', payment: payment }

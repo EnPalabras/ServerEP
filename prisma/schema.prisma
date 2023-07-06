@@ -34,7 +34,7 @@ model Orders {
   mail      String?   @db.VarChar(255)
   DNI      String?   @db.VarChar(255)
   telefono      String?   @db.VarChar(255)
-  montoTotal     Float?
+  montoTotal     Float? @default(0)
   externalId      String?   @db.VarChar(255)
   packId      String?   @db.VarChar(255)
   cuponPago     String?   @db.VarChar(255)
