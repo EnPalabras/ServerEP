@@ -273,7 +273,7 @@ export const localSales = async (page, search, shipStatus, payStatus) => {
                 Shipment: {
                   some: {
                     tipoEnvio: {
-                      contains: 'Recoleta',
+                      contains: 'Envío', // esto hay que modificarlo
                       mode: 'insensitive',
                     },
                   },
@@ -698,6 +698,121 @@ export const setManyPayments = async (orderId, payments) => {
     })
 
     return { status: 200, message: 'Payments updated' }
+  } catch (error) {
+    console.log(error)
+    return { status: 500, message: 'Error', error }
+  }
+}
+
+export const createNewOrder = async (body) => {
+  const fiveDigits = () => {
+    return Math.floor(Math.random() * 100000)
+  }
+
+  const id = `LO-${fiveDigits()}`
+
+  try {
+    let orderBody = {
+      idEP: id,
+      estado: 'Finalizada',
+      canalVenta: 'Local',
+      nombre: body.nombre,
+      mail: body.mail,
+      DNI: body.DNI,
+      telefono: body.telefono,
+      montoTotal: parseFloat(body.montoTotal),
+    }
+
+    await prisma.orders.create({
+      data: {
+        ...orderBody,
+      },
+    })
+
+    let paymentsOfOrder = []
+
+    body.payments.forEach((payment) => {
+      const paymentBody = {
+        idEP: id,
+        estado: 'Pagado',
+        tipoPago: payment.tipoPago,
+        cuentaDestino: payment.cuentaDestino,
+        fechaPago: setDateTN(payment.fechaPago),
+        fechaLiquidacion: setDateTN(payment.fechaLiquidacion),
+        moneda: payment.moneda,
+        montoTotal: parseFloat(payment.montoTotal),
+        montoRecibido: parseFloat(payment.montoRecibido),
+        cuotas: parseInt(payment.cuotas),
+      }
+
+      paymentsOfOrder.push(paymentBody)
+    })
+
+    paymentsOfOrder.forEach(async (payment) => {
+      await prisma.payments.create({
+        data: {
+          ...payment,
+        },
+      })
+    })
+
+    let shipmentsOfOrder = []
+
+    body.shipments.forEach((shipment) => {
+      const shipmentBody = {
+        idEP: id,
+        estado: 'Entregado',
+        tipoEnvio: shipment.tipoEnvio,
+        nombreEnvio: shipment.nombreEnvio,
+        costoEnvio: parseFloat(shipment.costoEnvio),
+        pagoEnvio: parseFloat(shipment.pagoEnvio),
+        stockDesde: shipment.stockDesde,
+        fechaEnvio: setDateTN(shipment.fechaEntrega),
+        fechaEntrega: setDateTN(shipment.fechaEntrega),
+        fechaRebotado: null,
+        codigoPostal: null,
+        ciudad: null,
+        provincia: null,
+        pais: null,
+      }
+
+      shipmentsOfOrder.push(shipmentBody)
+    })
+
+    shipmentsOfOrder.forEach(async (shipment) => {
+      await prisma.shipment.create({
+        data: {
+          ...shipment,
+        },
+      })
+    })
+
+    let productsOfOrder = []
+
+    body.products.forEach((product) => {
+      const productBody = {
+        idEP: id,
+        producto: product.producto,
+        variante: product.variante,
+        categoria: product.categoria,
+        cantidad: parseInt(product.cantidad),
+        precioUnitario: parseFloat(product.precioUnitario),
+        precioTotal: parseFloat(product.cantidad * product.precioUnitario),
+        moneda: product.moneda,
+      }
+
+      productsOfOrder.push(productBody)
+    })
+
+    productsOfOrder.forEach(async (product) => {
+      await prisma.products.create({
+        data: {
+          ...product,
+        },
+      })
+    })
+
+    return { status: 200, message: 'Order created' }
   } catch (error) {
     console.log(error)
     return { status: 500, message: 'Error', error }

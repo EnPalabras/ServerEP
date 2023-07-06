@@ -30,7 +30,7 @@ model Orders {
   fechaCreada DateTime @default(now())
   fechaActualizada DateTime? @updatedAt
   canalVenta String  @db.VarChar(255)
-  nombre     String   @db.VarChar(255)
+  nombre     String   @db.VarChar(255) @default("Sin nombre")
   mail      String?   @db.VarChar(255)
   DNI      String?   @db.VarChar(255)
   telefono      String?   @db.VarChar(255)
@@ -93,8 +93,8 @@ model Payments {
   estado String  @db.VarChar(255)
   tipoPago String  @db.VarChar(255)
   cuentaDestino String?  @db.VarChar(255)
-  fechaPago DateTime?
-  fechaLiquidacion DateTime? 
+  fechaPago DateTime? 
+  fechaLiquidacion DateTime?  
   montoTotal Float?
   montoRecibido Float?
   gatewayId  String?  @db.VarChar(255)
