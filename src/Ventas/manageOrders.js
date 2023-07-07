@@ -832,18 +832,15 @@ export const createNewOrder = async (body) => {
   }
 }
 
-export const markOrderAsDelivered = async (id) => {
+export const markOrderAsDelivered = async (id, date) => {
   try {
-    const order = await prisma.orders.update({
+    const order = await prisma.shipment.update({
       where: {
         idEP: id,
       },
       data: {
-        Shipment: {
-          update: {
-            estado: 'Entregado',
-          },
-        },
+        estado: 'Entregado',
+        fechaEntrega: date,
       },
     })
 
