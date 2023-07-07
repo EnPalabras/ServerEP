@@ -47,6 +47,8 @@ const gatewayTypes = {
   PayPal: 'PayPal',
   'Efectivo - Sólo en nuestro punto de retiro. ': 'Efectivo',
   'Efectivo - Sólo en nuestro punto de retiro.': 'Efectivo',
+  enpalabrasapi: 'Efectivo',
+  'En Palabras Pagos': 'Efectivo',
 }
 
 const paymentDestination = {
@@ -56,6 +58,8 @@ const paymentDestination = {
   PayPal: 'PayPal',
   'Efectivo - Sólo en nuestro punto de retiro.': 'Efectivo',
   'Efectivo - Sólo en nuestro punto de retiro. ': 'Efectivo',
+  enpalabrasapi: 'Efectivo',
+  'En Palabras Pagos': 'Efectivo',
 }
 
 const productos = {
