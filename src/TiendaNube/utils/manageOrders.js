@@ -52,10 +52,10 @@ const gatewayTypes = {
 const paymentDestination = {
   'Mercado Pago': 'Mercado Pago',
   'Transferencia (Válido para Argentina)': 'Mercado Pago',
-  'Transferencia (Válido para Argentina) ': 'Transferencia',
+  'Transferencia (Válido para Argentina) ': 'Mercado Pago',
   PayPal: 'PayPal',
-  'Efectivo - Sólo en nuestro punto de retiro.': 'Efectivo Katy',
-  'Efectivo - Sólo en nuestro punto de retiro. ': 'Efectivo Katy',
+  'Efectivo - Sólo en nuestro punto de retiro.': 'Efectivo',
+  'Efectivo - Sólo en nuestro punto de retiro. ': 'Efectivo',
 }
 
 const productos = {
@@ -172,6 +172,10 @@ const shipType = {
   'Envío CABA - 24hs - Comprando antes de las 12hs te llegará en el día.':
     'Flete',
   'Envío CABA - 24hs': 'Flete',
+  table_6629488: 'Flete',
+  'Envío CABA - 24hs - Comprando antes de las 12hs te llega en el día': 'Flete',
+  'Envío CABA - 24hs - Comprando antes de las 12hs te llega en el día ':
+    'Flete',
 }
 
 const shipStock = {
@@ -190,12 +194,22 @@ const shipStock = {
   'Envío CABA - 24hs - Comprando antes de las 12hs te llegará en el día.':
     'Juncal',
   'Envío CABA - 24hs': 'Juncal',
+  'Envío CABA - 24hs - Comprando antes de las 12hs te llega en el día':
+    'Juncal',
+  'Envío CABA - 24hs - Comprando antes de las 12hs te llega en el día ':
+    'Juncal',
 }
 
 const orderStatus = {
   open: 'Abierta',
   closed: 'Archivada',
   cancelled: 'Cancelada',
+}
+
+const paymentStatus = {
+  pending: 'Pendiente',
+  paid: 'Pagado',
+  approved: 'Pagado',
 }
 
 const shipStatus = {
@@ -241,7 +255,7 @@ export const createOrder = async (id) => {
 
     let paymentBody = {
       idEP: `TN-${orderData.number}`,
-      estado: orderData.payment_status,
+      estado: paymentStatus[orderData.payment_status],
       tipoPago: gatewayTypes[orderData.gateway_name] ?? null,
       cuentaDestino: paymentDestination[orderData.gateway_name] ?? null,
       fechaPago: orderData.paid_at ? setDateTN(orderData.paid_at) : null,
@@ -251,6 +265,7 @@ export const createOrder = async (id) => {
         orderData.payment_status === 'paid' ? parseFloat(orderData.total) : 0,
       gatewayId: orderData.gateway_id,
       cuotas: 1,
+      moneda: orderData.currency,
     }
 
     let shipBody = {
@@ -483,7 +498,7 @@ export const cancelOrder = async (id) => {
         idEP: `TN-${orderData.number}`,
       },
       data: {
-        estado: orderStatus[orderData.status],
+        estado: paymentStatus[orderData.payment_status],
       },
     })
 
@@ -508,7 +523,7 @@ export const cancelOrder = async (id) => {
       },
 
       data: {
-        estado: orderStatus[orderData.status],
+        estado: paymentStatus[orderData.payment_status],
         fechaPago: orderData.paid_at ? setDateTN(orderData.paid_at) : null,
         fechaLiquidacion: fechaLiquidacion,
         montoRecibido: montoRecibido,
