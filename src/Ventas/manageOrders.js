@@ -549,7 +549,7 @@ export const updateProductsFromOrder = async (id, products, paymentId) => {
     const sumDiscounts = sumOfDiscounts.reduce((acc, discount) => {
       return acc + discount.montoDescuento
     }, 0)
-
+    console.log(montoTotal, sumShipments, sumDiscounts)
     const total = montoTotal + sumShipments - sumDiscounts
 
     const order = await prisma.orders.update({
