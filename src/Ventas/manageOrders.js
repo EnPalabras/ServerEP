@@ -832,6 +832,28 @@ export const createNewOrder = async (body) => {
   }
 }
 
+export const markOrderAsDelivered = async (id) => {
+  try {
+    const order = await prisma.orders.update({
+      where: {
+        idEP: id,
+      },
+      data: {
+        Shipment: {
+          update: {
+            estado: 'Entregado',
+          },
+        },
+      },
+    })
+
+    return { status: 200, message: 'Order updated', order }
+  } catch (error) {
+    console.log(error)
+    return { status: 500, message: 'Error', error }
+  }
+}
+
 const parsePayment = {
   'Mercado Pago': 'Mercado Pago',
   'MP Jochi': 'MP Jochi',

@@ -180,6 +180,25 @@ Ventas.put('/:orderId/varios-pagos', async (req, res) => {
   }
 })
 
+Ventas.post('/order/delivered/:id', async (req, res) => {
+  const { id } = req.params
+  const { body } = req
+  const { date } = body
+
+  const request = await markOrderAsDelivered(id, date)
+
+  if (request.status !== 200) {
+    return res
+
+      .status(request.status ?? 500)
+      .json({ message: request.message, error: request.error })
+  } else {
+    return res
+      .status(request.status)
+      .json({ message: request.message, orders: request.order })
+  }
+})
+
 Ventas.all('/', (req, res) => {
   res.status(405).json({ message: 'Method not allowed' })
 })

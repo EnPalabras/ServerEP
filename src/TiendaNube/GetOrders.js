@@ -16,7 +16,7 @@ const headers = {
 export const getOrders = async () => {
   const agroupOrders = []
 
-  for (let i = 25; i > 10; i--) {
+  for (let i = 1; i < 10; i++) {
     console.log(`Page: ${i}`)
     const response = await fetch(URL + i, {
       method: 'GET',
