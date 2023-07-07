@@ -457,10 +457,9 @@ export const updateProductsFromOrder = async (id, products, paymentId) => {
         return acc + descuento.montoDescuento
       }, 0)
 
-    const montoTotal =
-      products.reduce((acc, product) => {
-        return acc + parseFloat(product.precioTotal)
-      }, 0) - totalDescuentos
+    const montoTotal = products.reduce((acc, product) => {
+      return acc + parseFloat(product.precioTotal)
+    }, 0)
 
     products.forEach((product) => {
       const productBody = {
@@ -520,7 +519,7 @@ export const updateProductsFromOrder = async (id, products, paymentId) => {
         data: {
           idEP: id,
           tipoDescuento: 'Metodo de Pago',
-          montoDescuento: montoTotal * 0.1,
+          montoDescuento: (montoTotal - totalDescuentos) * 0.1,
         },
       })
     }
