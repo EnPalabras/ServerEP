@@ -1,4 +1,8 @@
-let validEmails = ['agusiglesias72@gmail.com', 'enpalabrass@gmail.com', 'retiros@gmail.com']
+let validEmails = [
+  'agusiglesias72@gmail.com',
+  'enpalabrass@gmail.com',
+  'retirosep@gmail.com',
+]
 
 export function validateInfo(req, res, next) {
   const { body } = req
