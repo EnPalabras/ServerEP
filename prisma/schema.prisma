@@ -91,7 +91,7 @@ model Payments {
   id     String     @id @default(cuid())
   idEP String 
   estado String  @db.VarChar(255)
-  tipoPago String  @db.VarChar(255)
+  tipoPago String?  @db.VarChar(255)
   cuentaDestino String?  @db.VarChar(255)
   fechaPago DateTime? 
   fechaLiquidacion DateTime?  
