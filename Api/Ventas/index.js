@@ -67,8 +67,6 @@ Ventas.get('/get-orders', async (req, res) => {
   const salesChannel = query.sales
   const search = query.search
 
-  console.log(page, salesChannel)
-
   const request = await getOrders(page, salesChannel, search)
 
   if (request.status !== 200) {

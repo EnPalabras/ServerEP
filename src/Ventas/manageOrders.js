@@ -132,7 +132,6 @@ export const uploadSale = async (body) => {
 }
 
 export const getOneOrder = async (id) => {
-  console.log(id)
   try {
     const order = await prisma.orders.findUnique({
       where: {
@@ -145,8 +144,6 @@ export const getOneOrder = async (id) => {
         Discounts: true,
       },
     })
-
-    console.log(order)
 
     return { status: 200, message: 'Order', order: order }
   } catch (error) {
@@ -448,9 +445,22 @@ export const updateProductsFromOrder = async (id, products, paymentId) => {
 
     let productsOfOrder = []
 
-    const montoTotal = products.reduce((acc, product) => {
-      return acc + parseFloat(product.precioTotal)
-    }, 0)
+    const descuentos = await prisma.discounts.findMany({
+      where: {
+        idEP: id,
+      },
+    })
+
+    const totalDescuentos = descuentos
+      .filter((descuento) => descuento.tipoDescuento !== 'Metodo de Pago')
+      .reduce((acc, descuento) => {
+        return acc + descuento.montoDescuento
+      }, 0)
+
+    const montoTotal =
+      products.reduce((acc, product) => {
+        return acc + parseFloat(product.precioTotal)
+      }, 0) - totalDescuentos
 
     products.forEach((product) => {
       const productBody = {
@@ -489,8 +499,6 @@ export const updateProductsFromOrder = async (id, products, paymentId) => {
       resArray.push(updateProducts)
     })
 
-    console.log(paymentId)
-
     const payment = await prisma.payments.findUnique({
       where: {
         id: paymentId,
@@ -499,8 +507,6 @@ export const updateProductsFromOrder = async (id, products, paymentId) => {
         tipoPago: true,
       },
     })
-
-    console.log('payment', payment)
 
     if (payment.tipoPago === 'Efectivo') {
       await prisma.discounts.deleteMany({
@@ -663,7 +669,6 @@ export const updatePaymentFromOrder = async (
 
 export const setManyPayments = async (orderId, payments) => {
   try {
-    console.log(orderId)
     await prisma.payments.deleteMany({
       where: {
         idEP: orderId,

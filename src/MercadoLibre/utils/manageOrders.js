@@ -124,7 +124,6 @@ export const manageOrder = async (id) => {
         const order_id = item.order_id
 
         const URL_PAYMENT = `https://api.mercadolibre.com/orders/${order_id}`
-        console.log(URL_PAYMENT)
 
         const response = await fetch(URL_PAYMENT, { headers })
 
@@ -193,8 +192,6 @@ export const manageOrder = async (id) => {
         gatewayId: `${payment.id}`,
         cuotas: payment.installments,
       }
-
-      console.log(paymentBody)
 
       paymentsOfOrder.push(paymentBody)
     }
