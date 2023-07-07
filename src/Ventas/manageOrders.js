@@ -659,6 +659,15 @@ export const updatePaymentFromOrder = async (
       },
     })
 
+    const updateOrderPrice = await prisma.orders.update({
+      where: {
+        idEP: orderId,
+      },
+      data: {
+        montoTotal: total,
+      },
+    })
+
     return { status: 200, message: 'Order updated', payment: updatePayment }
   } catch (error) {
     console.log(error)
