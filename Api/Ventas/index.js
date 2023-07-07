@@ -9,6 +9,7 @@ import {
   setManyPayments,
   updateProductsFromOrder,
   updatePaymentFromOrder,
+  markOrderAsDelivered,
 } from '../../src/Ventas/manageOrders.js'
 
 const Ventas = express.Router()
@@ -189,7 +190,6 @@ Ventas.post('/order/delivered/:id', async (req, res) => {
 
   if (request.status !== 200) {
     return res
-
       .status(request.status ?? 500)
       .json({ message: request.message, error: request.error })
   } else {
