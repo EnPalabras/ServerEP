@@ -840,8 +840,8 @@ export const markOrderAsDelivered = async (id, date) => {
       },
       data: {
         estado: 'Entregado',
-        fechaEnvio: new Date(),
-        fechaEntrega: new Date(),
+        fechaEnvio: new Date(date),
+        fechaEntrega: new Date(date),
       },
     })
 
