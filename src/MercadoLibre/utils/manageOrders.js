@@ -128,15 +128,15 @@ export const manageOrder = async (id) => {
         const response = await fetch(URL_PAYMENT, { headers })
 
         const order = await response.json()
-        order.order_items.forEach(async (item) => {
+        order.order_items.forEach(async (order_item) => {
           let productBody = {
             id: `${order.id}`,
             idEP: `ML-${orderData.shipping.id}`,
-            producto: productos[item.item.title],
-            cantidad: item.quantity,
-            precioUnitario: item.unit_price,
-            precioTotal: item.full_unit_price,
-            moneda: item.currency_id,
+            producto: productos[order_item.item.title],
+            cantidad: order_item.quantity,
+            precioUnitario: order_item.unit_price,
+            precioTotal: order_item.full_unit_price,
+            moneda: order_item.currency_id,
           }
 
           productsOfOrder.push(productBody)
@@ -203,19 +203,27 @@ export const manageOrder = async (id) => {
     })
 
     productsOfOrder.forEach(async (product) => {
-      await prisma.products.create({
+      const creatingProducts = await prisma.products.create({
         data: {
           ...product,
         },
       })
+
+      if (orderData.pack_id !== null) {
+        console.log(creatingProducts)
+      }
     })
 
     paymentsOfOrder.forEach(async (payment) => {
-      await prisma.payments.create({
+      const creatingPayments = await prisma.payments.create({
         data: {
           ...payment,
         },
       })
+
+      if (orderData.pack_id !== null) {
+        console.log(creatingPayments)
+      }
     })
 
     let shipBody = {
