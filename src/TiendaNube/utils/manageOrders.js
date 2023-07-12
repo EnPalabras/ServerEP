@@ -311,7 +311,13 @@ export const createOrder = async (id) => {
       }
     }
 
-    if (orderData.shipping_option === 'Retiras en Punto de retiro Recoleta.') {
+    if (
+      (orderData.shipping_option === 'Retiras en Punto de retiro Recoleta.' ||
+        orderData.shipping_option === 'Retiras en Punto de retiro Recoleta') &&
+      (orderData.gateway_name === 'Mercado Pago' ||
+        orderData.gateway_name ===
+          'Efectivo - Sólo en nuestro punto de retiro.')
+    ) {
       await markPackedOrder(orderData.id)
     }
 
@@ -424,6 +430,16 @@ export const createOrder = async (id) => {
 export const updateOrder = async (id) => {
   try {
     const orderData = await getOrder(id)
+
+    if (
+      (orderData.shipping_option === 'Retiras en Punto de retiro Recoleta.' ||
+        orderData.shipping_option === 'Retiras en Punto de retiro Recoleta') &&
+      (orderData.gateway_name === 'Transferencia (Válido para Argentina)' ||
+        orderData.gateway_name === 'Transferencia') &&
+      orderData.payment_status === 'paid'
+    ) {
+      await markPackedOrder(orderData.id)
+    }
 
     await prisma.orders.update({
       where: {

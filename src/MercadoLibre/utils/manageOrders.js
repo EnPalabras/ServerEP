@@ -90,7 +90,7 @@ const shipStock = {
 export const manageOrder = async (id) => {
   try {
     const { orderData, dniData } = await getOrder(id)
-
+    console.log(orderData.shipping.id)
     let orderBody = {
       idEP: `ML-${orderData.shipping.id}`,
       estado: orderStatus[orderData.status],
@@ -133,6 +133,8 @@ export const manageOrder = async (id) => {
             id: `${order.id}`,
             idEP: `ML-${orderData.shipping.id}`,
             producto: productos[order_item.item.title],
+            variante: 'Unica',
+            categoria: 'Juegos',
             cantidad: order_item.quantity,
             precioUnitario: order_item.unit_price,
             precioTotal: order_item.full_unit_price,
@@ -155,6 +157,7 @@ export const manageOrder = async (id) => {
           montoTotal: payment.transaction_details.total_paid_amount,
           montoRecibido: payment.transaction_details.net_received_amount,
           gatewayId: `${payment.id}`,
+          moneda: 'ARS',
           cuotas: payment.installments,
         }
 
@@ -166,6 +169,8 @@ export const manageOrder = async (id) => {
           id: `${orderData.id}`,
           idEP: `ML-${orderData.shipping.id}`,
           producto: productos[item.item.title],
+          variante: 'Unica',
+          categoria: 'Juegos',
           cantidad: item.quantity,
           precioUnitario: item.unit_price,
           precioTotal: item.unit_price * item.quantity,
@@ -261,7 +266,12 @@ export const manageOrder = async (id) => {
       },
     })
 
-    return { status: 200, message: 'Order register created' }
+    return {
+      status: 200,
+      message: 'Order register created',
+      paymentsOfOrder,
+      productsOfOrder,
+    }
   } catch (error) {
     console.log(error)
     if (error.code === 'P2002') {
