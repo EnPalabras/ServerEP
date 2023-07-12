@@ -59,8 +59,6 @@ MercadoLibre.post('/', async (req, res) => {
 
   if (topic === 'orders_v2') {
     const request = await manageOrder(id)
-    console.log('gola')
-    return res.status(request.status).json({ request })
   }
 
   // DEBERÍA GUARDAR EN UN ARCHIVO O ALGO LOS QUE DEN ERROR

@@ -17,13 +17,9 @@ apiRoutes.use('/mayoristas', Mayoristas)
 apiRoutes.use('/paytn', PayTN)
 
 apiRoutes.post('/', async (req, res) => {
-  const results = await prisma.orders.deleteMany({
-    where: {
-      canalVenta: 'Tienda Nube',
-    },
-  })
+  const { body } = req
 
-  return res.json(results)
+  return res.status(200).json({ body })
 })
 
 // const deleteSome = await prisma.orders.deleteMany({
