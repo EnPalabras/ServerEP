@@ -288,6 +288,11 @@ export const localSales = async (page, search, shipStatus, payStatus) => {
               },
             ],
           },
+          {
+            canalVenta: {
+              in: ['Tienda Nube'],
+            },
+          },
         ],
       },
 
