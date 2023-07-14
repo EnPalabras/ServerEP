@@ -423,6 +423,10 @@ export const markOrderAsPaid = async (paymentId, date, amountReceived) => {
         estado: 'Pagado',
         fechaPago: parseDate(date),
         fechaLiquidacion: parseDate(date),
+        cuentaDestino:
+          payData.tipoPago === 'Efectivo'
+            ? 'Calipsian Recoleta'
+            : payData.cuentaDestino,
         montoRecibido: amountReceived,
         montoTotal:
           payData.tipoPago === 'Efectivo' ? amountReceived : payData.montoTotal,
@@ -840,6 +844,7 @@ export const markOrderAsDelivered = async (id, date) => {
       },
       data: {
         estado: 'Entregado',
+        stockDesde: 'Calipsian Recoleta',
         fechaEnvio: new Date(date),
         fechaEntrega: new Date(date),
       },

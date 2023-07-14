@@ -19,7 +19,48 @@ apiRoutes.use('/paytn', PayTN)
 apiRoutes.post('/', async (req, res) => {
   const { body } = req
 
-  return res.status(200).json({ body })
+  const order = body
+
+  try {
+    const orderCreated = await prisma.orders.create({
+      data: {
+        idEP: order.idEP,
+        fechaCreada: order.fechaCreada,
+        estado: order.estado,
+        canalVenta: order.canalVenta,
+        nombre: order.nombre,
+        mail: order.mail,
+        DNI: order.DNI,
+        telefono: order.telefono,
+        montoTotal: order.montoTotal,
+        externalId: order.externalId,
+        cuponPago: order.cuponPago,
+        packId: order.packId,
+        Products: {
+          create: order.Products,
+        },
+        Shipment: {
+          create: order.Shipment,
+        },
+        Payments: {
+          create: order.Payments,
+        },
+        Discounts: {
+          create: order.Discounts,
+        },
+      },
+    })
+    console.log('ok')
+    return res.status(200).json({
+      orderCreated,
+    })
+  } catch (error) {
+    console.log('no')
+
+    return res.status(500).json({
+      error,
+    })
+  }
 })
 
 // const deleteSome = await prisma.orders.deleteMany({

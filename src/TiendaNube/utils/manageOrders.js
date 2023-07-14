@@ -180,6 +180,7 @@ const shipType = {
   'Envío CABA - 24hs - Comprando antes de las 12hs te llega en el día': 'Flete',
   'Envío CABA - 24hs - Comprando antes de las 12hs te llega en el día ':
     'Flete',
+  'Punto de Retiro Recoleta': 'Recoleta',
 }
 
 const shipStock = {
@@ -194,14 +195,15 @@ const shipStock = {
   'Envío a Domicilio Estándar': 'Deposito EPack',
   'Envío a Domicilio Express': 'Deposito EPack',
   'Envío CABA - 24hs - Comprando antes de las 12hs te llegará en el día. ':
-    'Juncal',
+    'Calipsian Recoleta',
   'Envío CABA - 24hs - Comprando antes de las 12hs te llegará en el día.':
-    'Juncal',
-  'Envío CABA - 24hs': 'Juncal',
+    'Calipsian Recoleta',
+  'Envío CABA - 24hs': 'Calipsian Recoleta',
   'Envío CABA - 24hs - Comprando antes de las 12hs te llega en el día':
-    'Juncal',
+    'Calipsian Recoleta',
   'Envío CABA - 24hs - Comprando antes de las 12hs te llega en el día ':
-    'Juncal',
+    'Calipsian Recoleta',
+  'Punto de Retiro Recoleta': 'Calipsian Recoleta',
 }
 
 const orderStatus = {
