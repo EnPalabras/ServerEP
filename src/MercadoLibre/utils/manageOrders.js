@@ -84,7 +84,7 @@ const shipType = {
 
 const shipStock = {
   fulfillment: 'Deposito MELI',
-  self_service: 'Juncal',
+  self_service: 'Calipsian Recoleta',
 }
 
 export const manageOrder = async (id) => {

@@ -10,6 +10,7 @@ import {
   updateProductsFromOrder,
   updatePaymentFromOrder,
   markOrderAsDelivered,
+  uploadSaleLocal,
 } from '../../src/Ventas/manageOrders.js'
 
 const Ventas = express.Router()
@@ -121,6 +122,21 @@ Ventas.post('/', async (req, res) => {
 
   if (request.status !== 201) {
     return res
+      .status(request.status ?? 500)
+      .json({ message: request.message, error: request.error })
+  } else {
+    return res.status(request.status).json({ message: request.message })
+  }
+})
+
+Ventas.post('/local', async (req, res) => {
+  const { body } = req
+
+  const request = await uploadSaleLocal(body)
+
+  if (request.status !== 201) {
+    return res
+
       .status(request.status ?? 500)
       .json({ message: request.message, error: request.error })
   } else {
