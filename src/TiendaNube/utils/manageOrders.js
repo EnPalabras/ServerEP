@@ -181,6 +181,7 @@ const shipType = {
   'Envío CABA - 24hs - Comprando antes de las 12hs te llega en el día ':
     'Flete',
   'Punto de Retiro Recoleta': 'Recoleta',
+  'Retiras en Punto de Retiro Recoleta': 'Calipsian Recoleta',
 }
 
 const shipStock = {
@@ -204,6 +205,7 @@ const shipStock = {
   'Envío CABA - 24hs - Comprando antes de las 12hs te llega en el día ':
     'Calipsian Recoleta',
   'Punto de Retiro Recoleta': 'Calipsian Recoleta',
+  'Retiras en Punto de Retiro Recoleta': 'Calipsian Recoleta',
 }
 
 const orderStatus = {
