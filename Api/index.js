@@ -17,50 +17,93 @@ apiRoutes.use('/mayoristas', Mayoristas)
 apiRoutes.use('/paytn', PayTN)
 
 apiRoutes.post('/', async (req, res) => {
-  const { body } = req
-
-  const order = body
-
   try {
-    const orderCreated = await prisma.orders.create({
-      data: {
-        idEP: order.idEP,
-        fechaCreada: order.fechaCreada,
-        estado: order.estado,
-        canalVenta: order.canalVenta,
-        nombre: order.nombre,
-        mail: order.mail,
-        DNI: order.DNI,
-        telefono: order.telefono,
-        montoTotal: order.montoTotal,
-        externalId: order.externalId,
-        cuponPago: order.cuponPago,
-        packId: order.packId,
-        Products: {
-          create: order.Products,
-        },
-        Shipment: {
-          create: order.Shipment,
-        },
-        Payments: {
-          create: order.Payments,
-        },
-        Discounts: {
-          create: order.Discounts,
-        },
-      },
-    })
-    console.log('ok')
-    return res.status(200).json({
-      orderCreated,
-    })
-  } catch (error) {
-    console.log('no')
+    BigInt.prototype.toJSON = function () {
+      return parseInt(this.toString())
+    }
 
-    return res.status(500).json({
-      error,
+    const allCalipsian = await prisma.$queryRaw`
+     SELECT DATE_TRUNC('month', "Orders"."fechaCreada") AS "Month",
+     "Orders"."canalVenta" AS "Canal",
+     COUNT("Orders"."idEP") AS "Ventas"
+     FROM "Orders"
+    --  "Products"."producto" AS "Producto"
+    --  FROM "Products"
+    --  JOIN "Shipment"
+    --  ON "Products"."idEP" = "Shipment"."idEP"
+
+     WHERE "Orders"."estado" = 'Finalizada'
+     OR "Orders"."estado" = 'Abierta' OR "Orders"."estado" = 'Pendiente Envio' OR "Orders"."estado" = 'Pendiente Envío'
+     GROUP BY "Month", "Canal"
+     ORDER BY "Month" ASC
+     `
+
+    // const allCalipsian = await prisma.$queryRaw`
+    //  SELECT DATE_TRUNC('day', "Shipment"."fechaEnvio") AS "Date",
+    //  SUM("Products"."cantidad") AS "Cantidad",
+    //  "Products"."producto" AS "Producto"
+    //  FROM "Products"
+    //  JOIN "Shipment"
+    //  ON "Products"."idEP" = "Shipment"."idEP"
+
+    //  WHERE "Shipment"."stockDesde" = 'Calipsian Recoleta'
+    //  AND "Shipment"."fechaEnvio" IS NOT NULL
+    //  AND "Shipment"."estado" != 'cancelled'
+    //  GROUP BY "Producto", "Date"
+    //  `
+
+    return res.status(200).send(allCalipsian)
+  } catch (err) {
+    console.log(err)
+    return res.status(200).json({
+      err,
     })
   }
+
+  // const { body } = req
+
+  // const order = body
+
+  // try {
+  //   const orderCreated = await prisma.orders.create({
+  //     data: {
+  //       idEP: order.idEP,
+  //       fechaCreada: order.fechaCreada,
+  //       estado: order.estado,
+  //       canalVenta: order.canalVenta,
+  //       nombre: order.nombre,
+  //       mail: order.mail,
+  //       DNI: order.DNI,
+  //       telefono: order.telefono,
+  //       montoTotal: order.montoTotal,
+  //       externalId: order.externalId,
+  //       cuponPago: order.cuponPago,
+  //       packId: order.packId,
+  //       Products: {
+  //         create: order.Products,
+  //       },
+  //       Shipment: {
+  //         create: order.Shipment,
+  //       },
+  //       Payments: {
+  //         create: order.Payments,
+  //       },
+  //       Discounts: {
+  //         create: order.Discounts,
+  //       },
+  //     },
+  //   })
+  //   console.log('ok')
+  //   return res.status(200).json({
+  //     orderCreated,
+  //   })
+  // } catch (error) {
+  //   console.log('no')
+
+  //   return res.status(500).json({
+  //     error,
+  //   })
+  // }
 })
 
 // const deleteSome = await prisma.orders.deleteMany({

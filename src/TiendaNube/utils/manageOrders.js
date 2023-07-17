@@ -493,7 +493,9 @@ export const updateOrder = async (id) => {
         fechaEnvio: orderData.shipped_at
           ? setDateTN(orderData.shipped_at)
           : null,
-        fechaEntrega: null,
+        fechaEntrega: orderData.shipped_at
+          ? setDateTN(orderData.shipped_at)
+          : null,
         fechaRebotado: null,
       },
     })
