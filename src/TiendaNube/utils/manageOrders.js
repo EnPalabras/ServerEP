@@ -317,6 +317,7 @@ export const createOrder = async (id) => {
 
     if (
       (orderData.shipping_option === 'Retiras en Punto de retiro Recoleta.' ||
+        orderData.shipping_option === 'Retiras en Punto de Retiro Recoleta' ||
         orderData.shipping_option === 'Retiras en Punto de retiro Recoleta') &&
       (orderData.gateway_name === 'Mercado Pago' ||
         orderData.gateway_name ===
@@ -443,6 +444,22 @@ export const updateOrder = async (id) => {
       orderData.payment_status === 'paid'
     ) {
       await markPackedOrder(orderData.id)
+      // Creo que se marcarían dos veces empaquetadas, chequear esto en algún momento. Podríamos incluirlo en el próximo condicional
+    }
+
+    if (
+      orderData.status !== 'cancelled' &&
+      orderData.payment_status === 'paid' &&
+      orderData.shipping_status === 'shipped'
+    ) {
+      await prisma.orders.update({
+        where: {
+          idEP: `TN-${orderData.number}`,
+        },
+        data: {
+          estado: 'Finalizada',
+        },
+      })
     }
 
     await prisma.orders.update({
@@ -450,7 +467,7 @@ export const updateOrder = async (id) => {
         idEP: `TN-${orderData.number}`,
       },
       data: {
-        estado: orderStatus[orderData.status],
+        estado: 'Pendiente Envío',
       },
     })
 

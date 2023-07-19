@@ -51,7 +51,7 @@ MercadoLibre.get('/', async (req, res) => {
 // })
 
 MercadoLibre.post('/', async (req, res) => {
-  res.status(200).send({ message: 'Order updated' })
+  // res.status(200).send({ message: 'Order updated' })
   const { body } = req
   const { topic, resource } = body
   const id = resource.split('/').pop()
@@ -59,6 +59,7 @@ MercadoLibre.post('/', async (req, res) => {
 
   if (topic === 'orders_v2') {
     const request = await manageOrder(id)
+    return res.status(request.status).json({ request })
   }
 
   // DEBERÍA GUARDAR EN UN ARCHIVO O ALGO LOS QUE DEN ERROR

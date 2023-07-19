@@ -128,7 +128,7 @@ export const manageOrder = async (id) => {
         const response = await fetch(URL_PAYMENT, { headers })
 
         const order = await response.json()
-        order.order_items.forEach(async (order_item) => {
+        order.order_items.forEach((order_item) => {
           let productBody = {
             id: `${order.id}`,
             idEP: `ML-${orderData.shipping.id}`,
@@ -137,11 +137,12 @@ export const manageOrder = async (id) => {
             categoria: 'Juegos',
             cantidad: order_item.quantity,
             precioUnitario: order_item.unit_price,
-            precioTotal: order_item.full_unit_price,
+            precioTotal: order_item.unit_price * order_item.quantity,
             moneda: order_item.currency_id,
           }
 
           productsOfOrder.push(productBody)
+          console.log(productsOfOrder)
         })
 
         const payment = await getPayment(order.payments[0].id)
@@ -200,6 +201,7 @@ export const manageOrder = async (id) => {
 
       paymentsOfOrder.push(paymentBody)
     }
+    console.log('products', productsOfOrder)
 
     await prisma.orders.create({
       data: {
@@ -208,27 +210,30 @@ export const manageOrder = async (id) => {
     })
 
     productsOfOrder.forEach(async (product) => {
-      const creatingProducts = await prisma.products.create({
-        data: {
-          ...product,
-        },
-      })
-
-      if (orderData.pack_id !== null) {
-        console.log(creatingProducts)
-      }
+      setTimeout(async () => {
+        const creatingProducts = await prisma.products.create({
+          data: {
+            ...product,
+          },
+        })
+        if (orderData.pack_id !== null) {
+          console.log(creatingProducts)
+        }
+      }, 1000)
     })
 
     paymentsOfOrder.forEach(async (payment) => {
-      const creatingPayments = await prisma.payments.create({
-        data: {
-          ...payment,
-        },
-      })
+      setTimeout(async () => {
+        const creatingPayments = await prisma.payments.create({
+          data: {
+            ...payment,
+          },
+        })
 
-      if (orderData.pack_id !== null) {
-        console.log(creatingPayments)
-      }
+        if (orderData.pack_id !== null) {
+          console.log(creatingPayments)
+        }
+      }, 1000)
     })
 
     let shipBody = {

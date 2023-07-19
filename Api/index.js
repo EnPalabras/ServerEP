@@ -22,21 +22,21 @@ apiRoutes.post('/', async (req, res) => {
       return parseInt(this.toString())
     }
 
-    const allCalipsian = await prisma.$queryRaw`
-     SELECT DATE_TRUNC('month', "Orders"."fechaCreada") AS "Month",
-     "Orders"."canalVenta" AS "Canal",
-     COUNT("Orders"."idEP") AS "Ventas"
-     FROM "Orders"
-    --  "Products"."producto" AS "Producto"
-    --  FROM "Products"
-    --  JOIN "Shipment"
-    --  ON "Products"."idEP" = "Shipment"."idEP"
+    // const allCalipsian = await prisma.$queryRaw`
+    //  SELECT DATE_TRUNC('month', "Orders"."fechaCreada") AS "Month",
+    //  "Orders"."canalVenta" AS "Canal",
+    //  COUNT("Orders"."idEP") AS "Ventas"
+    //  FROM "Orders"
+    // --  "Products"."producto" AS "Producto"
+    // --  FROM "Products"
+    // --  JOIN "Shipment"
+    // --  ON "Products"."idEP" = "Shipment"."idEP"
 
-     WHERE "Orders"."estado" = 'Finalizada'
-     OR "Orders"."estado" = 'Abierta' OR "Orders"."estado" = 'Pendiente Envio' OR "Orders"."estado" = 'Pendiente Envío'
-     GROUP BY "Month", "Canal"
-     ORDER BY "Month" ASC
-     `
+    //  WHERE "Orders"."estado" = 'Finalizada'
+    //  OR "Orders"."estado" = 'Abierta' OR "Orders"."estado" = 'Pendiente Envio' OR "Orders"."estado" = 'Pendiente Envío'
+    //  GROUP BY "Month", "Canal"
+    //  ORDER BY "Month" ASC
+    //  `
 
     // const allCalipsian = await prisma.$queryRaw`
     //  SELECT DATE_TRUNC('day', "Shipment"."fechaEnvio") AS "Date",
@@ -51,6 +51,16 @@ apiRoutes.post('/', async (req, res) => {
     //  AND "Shipment"."estado" != 'cancelled'
     //  GROUP BY "Producto", "Date"
     //  `
+
+    const allCalipsian = await prisma.$queryRaw`
+     SELECT "Orders"."idEP" AS "id"
+
+     FROM "Orders"
+     LEFT OUTER JOIN "Products"
+     ON "Orders"."idEP" = "Products"."idEP"
+
+     WHERE "Products"."idEP" IS NULL
+     `
 
     return res.status(200).send(allCalipsian)
   } catch (err) {
