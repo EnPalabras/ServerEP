@@ -347,6 +347,7 @@ export const manageOrder = async (id) => {
         }
       })
     } else if (orderData.pack_id === null) {
+      let montoTotal = 0
       orderData.order_items.forEach((item) => {
         montoTotal += item.unit_price * item.quantity
       })
