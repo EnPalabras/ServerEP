@@ -73,6 +73,11 @@ const productos = {
     categoria: 'Juegos',
     variante: 'Unica',
   },
+  'kit-desconectados-destapados': {
+    nombre: 'Kit Desconectados + Destapados',
+    categoria: 'Juegos',
+    variante: 'Unica',
+  },
   anonuevo: {
     nombre: 'Año Nuevo',
     categoria: 'Juegos',
