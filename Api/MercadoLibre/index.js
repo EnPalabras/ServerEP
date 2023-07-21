@@ -66,7 +66,6 @@ MercadoLibre.post('/', async (req, res) => {
 
   if (topic === 'shipments') {
     const request = await updateOrder(id)
-    console.log(request)
   }
 })
 

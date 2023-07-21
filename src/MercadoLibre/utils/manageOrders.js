@@ -87,6 +87,125 @@ const shipStock = {
   self_service: 'Calipsian Recoleta',
 }
 
+// export const newManageOrder = async (id) => {
+//   try {
+//     const { orderData, dniData } = await getOrder(id)
+//     console.log(orderData.shipping.id)
+
+//     let orderBody = {
+//       idEP: `ML-${orderData.shipping.id}`,
+//       estado: orderStatus[orderData.status],
+//       fechaCreada: setDateML(orderData.date_created),
+//       canalVenta: 'Mercado Libre',
+//       nombre: `${orderData.buyer.first_name} ${orderData.buyer.last_name}`,
+//       mail: null,
+//       DNI: dniData.billing_info.doc_number,
+//       telefono: null,
+//       montoTotal: 0,
+//       externalId: `${orderData.shipping.id}`,
+//       packId: orderData.pack_id ? `${orderData.pack_id}` : null,
+//     }
+
+//     const productsOfOrder = []
+//     const paymentsOfOrder = []
+
+//     if (orderData.pack_id === null) {
+//       orderData.order_items.forEach((item) => {
+//         let productBody = {
+//           id: `${orderData.id}`,
+//           idEP: `ML-${orderData.shipping.id}`,
+//           producto: productos[item.item.title],
+//           variante: 'Unica',
+//           categoria: 'Juegos',
+//           cantidad: item.quantity,
+//           precioUnitario: item.unit_price,
+//           precioTotal: item.unit_price * item.quantity,
+//           moneda: item.currency_id,
+//         }
+
+//         orderBody = {
+//           ...orderBody,
+//           montoTotal: orderBody.montoTotal + productBody.precioTotal,
+//         }
+//         productsOfOrder.push(productBody)
+//       })
+
+//       const payment = await getPayment(orderData.payments[0].id)
+
+//       let paymentBody = {
+//         id: `${payment.id}`,
+//         idEP: `ML-${orderData.shipping.id}`,
+//         estado: payment.status,
+//         tipoPago: 'Mercado Pago',
+//         cuentaDestino: 'Mercado Pago',
+//         fechaPago: setDateML(payment.date_approved),
+//         fechaLiquidacion: setDateML(payment.money_release_date),
+//         montoTotal: payment.transaction_details.total_paid_amount,
+//         montoRecibido: payment.transaction_details.net_received_amount,
+//         gatewayId: `${payment.id}`,
+//         cuotas: payment.installments,
+//       }
+
+//       paymentsOfOrder.push(paymentBody)
+
+//       const shipData = await getShip(orderData.shipping.id)
+
+//       let shipBody = {
+//         id: `${orderData.shipping.id}`,
+//         idEP: `ML-${orderData.shipping.id}`,
+//         estado: shipData.status,
+//         tipoEnvio: shipType[shipData.logistic_type] ?? null,
+//         nombreEnvio: shipData.logistic_type,
+//         costoEnvio: shipData.base_cost,
+//         pagoEnvio: 0,
+//         stockDesde: shipStock[shipData.logistic_type] ?? null,
+//         fechaEnvio: setDateML(shipData.status_history.date_shipped),
+//         fechaEntrega: setDateML(shipData.status_history.date_delivered),
+//         fechaRebotado: setDateML(shipData.status_history.date_not_delivered),
+//         codigoPostal: shipData.receiver_address.zip_code,
+//         ciudad: shipData.receiver_address.city.name,
+//         provincia: shipData.receiver_address.state.name,
+//         pais: shipData.receiver_address.country.name,
+//       }
+
+//       await prisma.shipment.create({
+//         data: {
+//           ...shipBody,
+//         },
+//       })
+
+//       await prisma.orders.create({
+//         data: {
+//           ...orderBody,
+//         },
+//       })
+
+//       productsOfOrder.forEach(async (product) => {
+//         await prisma.products.create({
+//           data: {
+//             ...product,
+//           },
+//         })
+//       })
+
+//       paymentsOfOrder.forEach(async (payment) => {
+//         await prisma.payments.create({
+//           data: {
+//             ...payment,
+//           },
+//         })
+//       })
+//     }
+
+//     else if (orderData.pack_id !== null) {
+
+//     }
+//   } catch (err) {
+//     console.log(err)
+//     return { status: 408, message: 'Error', error: err }
+//   }
+// }
+
 export const manageOrder = async (id) => {
   try {
     const { orderData, dniData } = await getOrder(id)
@@ -100,108 +219,10 @@ export const manageOrder = async (id) => {
       mail: null,
       DNI: dniData.billing_info.doc_number,
       telefono: null,
-      montoTotal: parseFloat(orderData.total_amount),
+      montoTotal: 0,
       externalId: `${orderData.shipping.id}`,
       packId: orderData.pack_id ? `${orderData.pack_id}` : null,
     }
-
-    const shipData = await getShip(orderData.shipping.id)
-
-    let productsOfOrder = []
-
-    let paymentsOfOrder = []
-
-    if (orderData.pack_id !== null) {
-      const headers = {
-        Authorization: AUTH_MERCADOPAGO,
-      }
-      const res = await fetch(
-        `https://api.mercadolibre.com/shipments/${orderData.shipping.id}/items`,
-        { headers }
-      )
-      const data = await res.json()
-      data.forEach(async (item) => {
-        const order_id = item.order_id
-
-        const URL_PAYMENT = `https://api.mercadolibre.com/orders/${order_id}`
-
-        const response = await fetch(URL_PAYMENT, { headers })
-
-        const order = await response.json()
-        order.order_items.forEach((order_item) => {
-          let productBody = {
-            id: `${order.id}`,
-            idEP: `ML-${orderData.shipping.id}`,
-            producto: productos[order_item.item.title],
-            variante: 'Unica',
-            categoria: 'Juegos',
-            cantidad: order_item.quantity,
-            precioUnitario: order_item.unit_price,
-            precioTotal: order_item.unit_price * order_item.quantity,
-            moneda: order_item.currency_id,
-          }
-
-          productsOfOrder.push(productBody)
-          console.log(productsOfOrder)
-        })
-
-        const payment = await getPayment(order.payments[0].id)
-
-        let paymentBody = {
-          id: `${payment.id}`,
-          idEP: `ML-${orderData.shipping.id}`,
-          estado: payment.status,
-          tipoPago: 'Mercado Pago',
-          cuentaDestino: 'Mercado Pago',
-          fechaPago: setDateML(payment.date_approved),
-          fechaLiquidacion: setDateML(payment.money_release_date),
-          montoTotal: payment.transaction_details.total_paid_amount,
-          montoRecibido: payment.transaction_details.net_received_amount,
-          gatewayId: `${payment.id}`,
-          moneda: 'ARS',
-          cuotas: payment.installments,
-        }
-
-        paymentsOfOrder.push(paymentBody)
-      })
-    } else if (orderData.pack_id === null) {
-      orderData.order_items.forEach((item) => {
-        let productBody = {
-          id: `${orderData.id}`,
-          idEP: `ML-${orderData.shipping.id}`,
-          producto: productos[item.item.title],
-          variante: 'Unica',
-          categoria: 'Juegos',
-          cantidad: item.quantity,
-          precioUnitario: item.unit_price,
-          precioTotal: item.unit_price * item.quantity,
-          moneda: item.currency_id,
-        }
-
-        productsOfOrder.push(productBody)
-      })
-      const headers = {
-        Authorization: AUTH_MERCADOPAGO,
-      }
-      const payment = await getPayment(orderData.payments[0].id)
-
-      let paymentBody = {
-        id: `${payment.id}`,
-        idEP: `ML-${orderData.shipping.id}`,
-        estado: payment.status,
-        tipoPago: 'Mercado Pago',
-        cuentaDestino: 'Mercado Pago',
-        fechaPago: setDateML(payment.date_approved),
-        fechaLiquidacion: setDateML(payment.money_release_date),
-        montoTotal: payment.transaction_details.total_paid_amount,
-        montoRecibido: payment.transaction_details.net_received_amount,
-        gatewayId: `${payment.id}`,
-        cuotas: payment.installments,
-      }
-
-      paymentsOfOrder.push(paymentBody)
-    }
-    console.log('products', productsOfOrder)
 
     await prisma.orders.create({
       data: {
@@ -209,32 +230,7 @@ export const manageOrder = async (id) => {
       },
     })
 
-    productsOfOrder.forEach(async (product) => {
-      setTimeout(async () => {
-        const creatingProducts = await prisma.products.create({
-          data: {
-            ...product,
-          },
-        })
-        if (orderData.pack_id !== null) {
-          console.log(creatingProducts)
-        }
-      }, 1000)
-    })
-
-    paymentsOfOrder.forEach(async (payment) => {
-      setTimeout(async () => {
-        const creatingPayments = await prisma.payments.create({
-          data: {
-            ...payment,
-          },
-        })
-
-        if (orderData.pack_id !== null) {
-          console.log(creatingPayments)
-        }
-      }, 1000)
-    })
+    const shipData = await getShip(orderData.shipping.id)
 
     let shipBody = {
       id: `${orderData.shipping.id}`,
@@ -257,6 +253,7 @@ export const manageOrder = async (id) => {
     orderData.payments.forEach((payment) => {
       if (payment.status === 'approved') {
         let value = shipBody.pagoEnvio
+        orderBody.montoTotal += payment.shipping_cost
         value += payment.shipping_cost
         shipBody = {
           ...shipBody,
@@ -265,6 +262,146 @@ export const manageOrder = async (id) => {
       }
     })
 
+    if (orderData.pack_id !== null) {
+      const headers = {
+        Authorization: AUTH_MERCADOPAGO,
+      }
+      const res = await fetch(
+        `https://api.mercadolibre.com/shipments/${orderData.shipping.id}/items`,
+        { headers }
+      )
+      const data = await res.json()
+
+      let sumatoria = []
+
+      data.forEach(async (item, index) => {
+        const order_id = item.order_id
+        console.log(index)
+        console.log(data.length)
+
+        const URL_PAYMENT = `https://api.mercadolibre.com/orders/${order_id}`
+
+        const response = await fetch(URL_PAYMENT, { headers })
+
+        const order = await response.json()
+        const order_items = order.order_items
+
+        order_items.forEach((order_item) => {
+          sumatoria.push(order_item.unit_price * order_item.quantity)
+        })
+
+        order_items.forEach(async (order_item) => {
+          let productBody = {
+            id: `${order.id}`,
+            idEP: `ML-${orderData.shipping.id}`,
+            producto: productos[order_item.item.title],
+            variante: 'Unica',
+            categoria: 'Juegos',
+            cantidad: order_item.quantity,
+            precioUnitario: order_item.unit_price,
+            precioTotal: order_item.unit_price * order_item.quantity,
+            moneda: order_item.currency_id,
+          }
+
+          await prisma.products.create({
+            data: {
+              ...productBody,
+            },
+          })
+
+          const payment = await getPayment(order.payments[0].id)
+
+          let paymentBody = {
+            id: `${payment.id}`,
+            idEP: `ML-${orderData.shipping.id}`,
+            estado: payment.status,
+            tipoPago: 'Mercado Pago',
+            cuentaDestino: 'Mercado Pago',
+            fechaPago: setDateML(payment.date_approved),
+            fechaLiquidacion: setDateML(payment.money_release_date),
+            montoTotal: payment.transaction_details.total_paid_amount,
+            montoRecibido: payment.transaction_details.net_received_amount,
+            gatewayId: `${payment.id}`,
+            moneda: 'ARS',
+            cuotas: payment.installments,
+          }
+
+          await prisma.payments.create({
+            data: {
+              ...paymentBody,
+            },
+          })
+        })
+
+        if (index === data.length - 1) {
+          const sumatoriaTotal = sumatoria.reduce((a, b) => a + b, 0)
+          console.log(sumatoriaTotal)
+          await prisma.orders.update({
+            where: {
+              idEP: `ML-${orderData.shipping.id}`,
+            },
+            data: {
+              montoTotal: sumatoriaTotal,
+            },
+          })
+        }
+      })
+    } else if (orderData.pack_id === null) {
+      orderData.order_items.forEach((item) => {
+        montoTotal += item.unit_price * item.quantity
+      })
+
+      orderData.order_items.forEach(async (item) => {
+        let productBody = {
+          id: `${orderData.id}`,
+          idEP: `ML-${orderData.shipping.id}`,
+          producto: productos[item.item.title],
+          variante: 'Unica',
+          categoria: 'Juegos',
+          cantidad: item.quantity,
+          precioUnitario: item.unit_price,
+          precioTotal: item.unit_price * item.quantity,
+          moneda: item.currency_id,
+        }
+
+        await prisma.products.create({
+          data: {
+            ...productBody,
+          },
+        })
+
+        await prisma.orders.update({
+          where: {
+            idEP: `ML-${orderData.shipping.id}`,
+          },
+          data: {
+            montoTotal: montoTotal,
+          },
+        })
+
+        const payment = await getPayment(orderData.payments[0].id)
+
+        let paymentBody = {
+          id: `${payment.id}`,
+          idEP: `ML-${orderData.shipping.id}`,
+          estado: payment.status,
+          tipoPago: 'Mercado Pago',
+          cuentaDestino: 'Mercado Pago',
+          fechaPago: setDateML(payment.date_approved),
+          fechaLiquidacion: setDateML(payment.money_release_date),
+          montoTotal: payment.transaction_details.total_paid_amount,
+          montoRecibido: payment.transaction_details.net_received_amount,
+          gatewayId: `${payment.id}`,
+          cuotas: payment.installments,
+        }
+
+        await prisma.payments.create({
+          data: {
+            ...paymentBody,
+          },
+        })
+      })
+    }
     await prisma.shipment.create({
       data: {
         ...shipBody,
@@ -274,8 +411,6 @@ export const manageOrder = async (id) => {
     return {
       status: 200,
       message: 'Order register created',
-      paymentsOfOrder,
-      productsOfOrder,
     }
   } catch (error) {
     console.log(error)
