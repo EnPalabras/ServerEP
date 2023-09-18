@@ -23,108 +23,90 @@ const canal = {
 }
 
 export const uploadSaleLocal = async (body) => {
-    const orderCreated = await prisma.orders.create({
+  const orderCreated = await prisma.orders.create({
+    data: {
+      idEP: body.idEP,
+      fechaCreada: setDateTN(new Date()),
+      estado: 'Finalizada',
+      canalVenta: 'Local',
+      nombre: body.nombre,
+      mail: body.mail,
+      DNI: body.DNI,
+      telefono: body.telefono,
+      montoTotal: parseFloat(body.montoTotal),
+    },
+  })
+
+  const paymentsOfOrder = body.Payments.map((payment) => {
+    return {
+      idEP: body.idEP,
+      estado: 'Pagado',
+      tipoPago: payment.tipoPago,
+      cuentaDestino: payment.cuentaDestino,
+      fechaPago: setDateTN(new Date()),
+      fechaLiquidacion: setDateTN(new Date()),
+      moneda: payment.moneda,
+      montoTotal: parseFloat(payment.montoTotal),
+      montoRecibido: parseFloat(payment.montoRecibido),
+      cuotas: parseInt(payment.cuotas),
+    }
+  })
+
+  paymentsOfOrder.forEach(async (payment) => {
+    await prisma.payments.create({
       data: {
-        idEP: body.idEP,
-    fechaCreada: setDateTN(
-      new Date()
-      ),
-    estado: 'Finalizada',
-    canalVenta: 'Local',
-    nombre: body.nombre,
-    mail: body.mail,
-    DNI: body.DNI,
-    telefono: body.telefono,
-    montoTotal: parseFloat(body.montoTotal),
-      
+        ...payment,
       },
-
-
     })
+  })
 
-    const paymentsOfOrder = body.payments.map((payment) => {
-      return {
-        idEP: body.idEP,
-        estado: 'Pagado',
-        tipoPago: payment.tipoPago,
-        cuentaDestino: payment.cuentaDestino,
-        fechaPago: setDateTN(payment.fechaPago),
-        fechaLiquidacion: setDateTN(payment.fechaLiquidacion),
-        moneda: payment.moneda,
-        montoTotal: parseFloat(payment.montoTotal),
-        montoRecibido: parseFloat(payment.montoRecibido),
-        cuotas: parseInt(payment.cuotas),
+  const shipmentsOfOrder = body.Shipments.map((shipment) => {
+    return {
+      idEP: body.idEP,
+      estado: 'Entregado',
+      tipoEnvio: shipment.tipoEnvio,
+      nombreEnvio: shipment.nombreEnvio,
+      costoEnvio: parseFloat(shipment.costoEnvio),
+      pagoEnvio: parseFloat(shipment.pagoEnvio),
+      stockDesde: shipment.stockDesde,
+      fechaEnvio: setDateTN(new Date()),
+      fechaEntrega: setDateTN(new Date()),
+      ciudad: null,
+      provincia: shipment.provincia,
+      pais: shipment.pais,
+    }
+  })
 
-      }
+  shipmentsOfOrder.forEach(async (shipment) => {
+    await prisma.shipment.create({
+      data: {
+        ...shipment,
+      },
     })
+  })
 
-    paymentsOfOrder.forEach(async (payment) => {
-      await prisma.payments.create({
-        data: {
-          ...payment,
-        },
-      })
+  const productsOfOrder = body.Products.map((product) => {
+    return {
+      idEP: body.idEP,
+      producto: product.producto,
+      variante: product.variante,
+      categoria: product.categoria,
+      cantidad: parseInt(product.cantidad),
+      precioUnitario: parseFloat(product.precioUnitario),
+      precioTotal: parseFloat(product.cantidad * product.precioUnitario),
+      moneda: product.moneda,
+    }
+  })
+
+  productsOfOrder.forEach(async (product) => {
+    await prisma.products.create({
+      data: {
+        ...product,
+      },
     })
-
-    const shipmentsOfOrder = body.shipments.map((shipment) => {
-      return {
-        idEP: body.idEP,
-        estado: 'Entregado',
-        tipoEnvio: shipment.tipoEnvio,
-        nombreEnvio: shipment.nombreEnvio,
-        costoEnvio: parseFloat(shipment.costoEnvio),
-        pagoEnvio: parseFloat(shipment.pagoEnvio),
-        stockDesde: shipment.stockDesde,
-        fechaEnvio: setDateTN(shipment.fechaEntrega),
-        fechaEntrega: setDateTN(shipment.fechaEntrega),
-        ciudad: null,
-        provincia: shipment.provincia,
-        pais: shipment.pais,
-      }
-    })
-
-    shipmentsOfOrder.forEach(async (shipment) => {
-      await prisma.shipment.create({
-        data: {
-          ...shipment,
-        },
-      })
-    })
-
-    const productsOfOrder = body.products.map((product) => {
-      return {
-        idEP: body.idEP,
-        producto: product.producto,
-        variante: product.variante,
-        categoria: product.categoria,
-        cantidad: parseInt(product.cantidad),
-        precioUnitario: parseFloat(product.precioUnitario),
-        precioTotal: parseFloat(product.cantidad * product.precioUnitario),
-        moneda: product.moneda,
-      }
-    })
-
-    productsOfOrder.forEach(async (product) => {
-      await prisma.products.create({
-        data: {
-          ...product,
-        },
-      })
-    })
-
-    
-
-
-
-
-
-
-
-      return { status: 200, message: 'Sale created', orderCreated }
-  }
-
-  
-
+  })
+  return { status: 200, message: 'Sale created', orderCreated }
+}
 
 export const uploadSale = async (body) => {
   let id = genereteId()

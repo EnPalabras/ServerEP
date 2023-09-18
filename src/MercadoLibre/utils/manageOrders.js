@@ -394,6 +394,7 @@ export const manageOrder = async (id) => {
           montoRecibido: payment.transaction_details.net_received_amount,
           gatewayId: `${payment.id}`,
           cuotas: payment.installments,
+          moneda: 'ARS',
         }
 
         await prisma.payments.create({

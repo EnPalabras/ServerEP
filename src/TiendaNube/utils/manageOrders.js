@@ -229,8 +229,8 @@ const shipStatus = {
   unshipped: 'Pendiente',
   unpacked: 'Pendiente',
   unfulfilled: 'Pendiente',
-  fulfilled: 'Entregado',
-  shipped: 'Entregado',
+  fulfilled: 'Finalizada',
+  shipped: 'Finalizada',
 }
 
 const markPackedOrder = async (id) => {
@@ -465,16 +465,20 @@ export const updateOrder = async (id) => {
           estado: 'Finalizada',
         },
       })
+    } else if (
+      orderData.status !== 'cancelled' &&
+      orderData.payment_status === 'paid' &&
+      orderData.shipping_status !== 'shipped'
+    ) {
+      await prisma.orders.update({
+        where: {
+          idEP: `TN-${orderData.number}`,
+        },
+        data: {
+          estado: 'Pendiente Envío',
+        },
+      })
     }
-
-    await prisma.orders.update({
-      where: {
-        idEP: `TN-${orderData.number}`,
-      },
-      data: {
-        estado: 'Pendiente Envío',
-      },
-    })
 
     let fechaLiquidacion = orderData.paid_at
       ? setDateTN(orderData.paid_at)
