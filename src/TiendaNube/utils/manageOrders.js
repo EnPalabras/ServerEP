@@ -320,16 +320,16 @@ export const createOrder = async (id) => {
       }
     }
 
-    if (
-      (orderData.shipping_option === 'Retiras en Punto de retiro Recoleta.' ||
-        orderData.shipping_option === 'Retiras en Punto de Retiro Recoleta' ||
-        orderData.shipping_option === 'Retiras en Punto de retiro Recoleta') &&
-      (orderData.gateway_name === 'Mercado Pago' ||
-        orderData.gateway_name ===
-          'Efectivo - Sólo en nuestro punto de retiro.')
-    ) {
-      await markPackedOrder(orderData.id)
-    }
+    // if (
+    //   (orderData.shipping_option === 'Retiras en Punto de retiro Recoleta.' ||
+    //     orderData.shipping_option === 'Retiras en Punto de Retiro Recoleta' ||
+    //     orderData.shipping_option === 'Retiras en Punto de retiro Recoleta') &&
+    //   (orderData.gateway_name === 'Mercado Pago' ||
+    //     orderData.gateway_name ===
+    //       'Efectivo - Sólo en nuestro punto de retiro.')
+    // ) {
+    //   await markPackedOrder(orderData.id)
+    // }
 
     await prisma.orders.create({
       data: {
@@ -441,16 +441,16 @@ export const updateOrder = async (id) => {
   try {
     const orderData = await getOrder(id)
 
-    if (
-      (orderData.shipping_option === 'Retiras en Punto de retiro Recoleta.' ||
-        orderData.shipping_option === 'Retiras en Punto de retiro Recoleta') &&
-      (orderData.gateway_name === 'Transferencia (Válido para Argentina)' ||
-        orderData.gateway_name === 'Transferencia') &&
-      orderData.payment_status === 'paid'
-    ) {
-      await markPackedOrder(orderData.id)
-      // Creo que se marcarían dos veces empaquetadas, chequear esto en algún momento. Podríamos incluirlo en el próximo condicional
-    }
+    // if (
+    //   (orderData.shipping_option === 'Retiras en Punto de retiro Recoleta.' ||
+    //     orderData.shipping_option === 'Retiras en Punto de retiro Recoleta') &&
+    //   (orderData.gateway_name === 'Transferencia (Válido para Argentina)' ||
+    //     orderData.gateway_name === 'Transferencia') &&
+    //   orderData.payment_status === 'paid'
+    // ) {
+    //   await markPackedOrder(orderData.id)
+    //   // Creo que se marcarían dos veces empaquetadas, chequear esto en algún momento. Podríamos incluirlo en el próximo condicional
+    // }
 
     if (
       orderData.status !== 'cancelled' &&
